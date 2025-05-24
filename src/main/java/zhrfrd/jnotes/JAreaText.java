@@ -1,7 +1,7 @@
 package zhrfrd.jnotes;
 
 import javax.swing.*;
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -17,6 +17,7 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
 
     public JAreaText() {
         lines.add(""); // start with one empty line
+        setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(this);
         addFocusListener(this);
@@ -33,17 +34,20 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
         int tempLineHeight = lineHeight;
         // TODO: Needs to be more efficient. At the moment it's looping over and over at each Timer tick
         for (String line : lines) {
+            g.setColor(Color.WHITE);
             g.drawString(line, START_X, tempLineHeight);
             tempLineHeight += lineHeight;
         }
     }
 
     private void drawCaret(Graphics g, int lineHeight) {
+        Graphics2D g2 = (Graphics2D)g;
         String lineText = lines.get(caretRow).substring(0, caretCol);
         int lineTextLength = g.getFontMetrics().stringWidth(lineText);
         int caretX = START_X + lineTextLength;
         int caretY = caretRow * lineHeight + 5;
-        g.drawLine(caretX, caretY, caretX, caretY + lineHeight - 5);
+        g2.setStroke(new BasicStroke(2));
+        g2.drawLine(caretX, caretY, caretX, caretY + lineHeight - 2);
     }
 
     @Override
@@ -63,7 +67,7 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
         char c = e.getKeyChar();
         String line = lines.get(caretRow);
 
-        // Check if it's a real character and not a control character such as tabs, backspaces ...
+        // Check if it's a real character and not a control character such as tabs, backspaces etc.
         if (Character.isDefined(c) && !Character.isISOControl(c)) {
             lines.set(caretRow, line.substring(0, caretCol) + c + line.substring(caretCol));
             caretCol ++;
@@ -87,9 +91,10 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
         repaint();
     }
 
-    // Key pressed: handle arrows, delete, etc.
     @Override
     public void keyPressed(KeyEvent e) {
+        caretVisible = true;
+
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT:
                 if (caretCol > 0) {
@@ -119,13 +124,16 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
                     caretCol = Math.min(caretCol, lines.get(caretRow).length());
                 }
                 break;
+
         }
+
         repaint();
     }
 
     @Override
     public void focusGained(FocusEvent e) {
         caretVisible = true;
+        setCursor(new Cursor(Cursor.TEXT_CURSOR));
         repaint();
     }
 
