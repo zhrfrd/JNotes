@@ -6,17 +6,20 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
 
 public class JAreaText extends JPanel implements KeyListener, FocusListener {
-    private final ArrayList<String> lines = new ArrayList<>();
     private static final int START_X = 10;
-    private int caretRow = 0;
-    private int caretCol = 0;
-    private boolean caretVisible = true;
+    private GapBuffer gapBuffer;
+    private int caretRow;
+    private int caretCol;
+    private boolean caretVisible;
 
     public JAreaText() {
-        lines.add(""); // start with one empty line
+        gapBuffer = new GapBuffer();
+        caretRow = 0;
+        caretCol = 0;
+        caretVisible = true;
+
         setBackground(Color.BLACK);
         setFocusable(true);
         addKeyListener(this);
@@ -25,29 +28,28 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
         // Timer for caret blinking
         Timer timer = new Timer(500, e -> {
             caretVisible = !caretVisible;
-            repaint();
+//            repaint();
         });
         timer.start();
     }
 
     private void drawText(Graphics g, int lineHeight) {
-        int tempLineHeight = lineHeight;
-        // TODO: Needs to be more efficient. At the moment it's looping over and over at each Timer tick
-        for (String line : lines) {
-            g.setColor(Color.WHITE);
-            g.drawString(line, START_X, tempLineHeight);
-            tempLineHeight += lineHeight;
-        }
+        g.setColor(Color.WHITE);
+        String text = gapBuffer.getText();
+        g.drawString(text, START_X, lineHeight);
     }
 
     private void drawCaret(Graphics g, int lineHeight) {
+        /*
+        To draw a caret use:
+
         Graphics2D g2 = (Graphics2D)g;
-        String lineText = lines.get(caretRow).substring(0, caretCol);
         int lineTextLength = g.getFontMetrics().stringWidth(lineText);
         int caretX = START_X + lineTextLength;
         int caretY = caretRow * lineHeight + 5;
         g2.setStroke(new BasicStroke(2));
         g2.drawLine(caretX, caretY, caretX, caretY + lineHeight - 2);
+         */
     }
 
     @Override
@@ -65,27 +67,14 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
     @Override
     public void keyTyped(KeyEvent e) {
         char c = e.getKeyChar();
-        String line = lines.get(caretRow);
 
-        // Check if it's a real character and not a control character such as tabs, backspaces etc.
+        // Check if the character typed is a real character and not a control character such as tabs, backspaces etc.
         if (Character.isDefined(c) && !Character.isISOControl(c)) {
-            lines.set(caretRow, line.substring(0, caretCol) + c + line.substring(caretCol));
-            caretCol ++;
+            gapBuffer.insert(c);
         } else if (c == '\n') {   // New line
-            lines.add(caretRow + 1, line.substring(caretCol));
-            lines.set(caretRow, line.substring(0, caretCol));
-            caretRow ++;
-            caretCol = 0;
+
         } else if (c == '\b') {   // Backspace
-            if (caretCol > 0) {
-                lines.set(caretRow, line.substring(0, caretCol - 1) + line.substring(caretCol));
-                caretCol --;
-            } else if (caretRow > 0) {
-                caretCol = lines.get(caretRow - 1).length();
-                lines.set(caretRow - 1, lines.get(caretRow - 1) + line);
-                lines.remove(caretRow);
-                caretRow --;
-            }
+            gapBuffer.delete();
         }
 
         repaint();
@@ -95,39 +84,12 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
     public void keyPressed(KeyEvent e) {
         caretVisible = true;
 
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_LEFT:
-                if (caretCol > 0) {
-                    caretCol --;
-                } else if (caretRow > 0) {
-                    caretRow --;
-                    caretCol = lines.get(caretRow).length();
-                }
-                break;
-            case KeyEvent.VK_RIGHT:
-                if (caretCol < lines.get(caretRow).length()) {
-                    caretCol ++;
-                } else if (caretRow < lines.size() - 1) {
-                    caretRow ++;
-                    caretCol = 0;
-                }
-                break;
-            case KeyEvent.VK_UP:
-                if (caretRow > 0) {
-                    caretRow --;
-                    caretCol = Math.min(caretCol, lines.get(caretRow).length());
-                }
-                break;
-            case KeyEvent.VK_DOWN:
-                if (caretRow < lines.size() - 1) {
-                    caretRow ++;
-                    caretCol = Math.min(caretCol, lines.get(caretRow).length());
-                }
-                break;
-
+        if (e.getKeyChar() == KeyEvent.VK_LEFT || e.getKeyChar() == KeyEvent.VK_RIGHT || e.getKeyChar() == KeyEvent.VK_UP || e.getKeyChar() == KeyEvent.VK_DOWN) {
+            gapBuffer.moveCursor(e.getKeyChar());
+            repaint();
         }
 
-        repaint();
+//        repaint();
     }
 
     @Override
