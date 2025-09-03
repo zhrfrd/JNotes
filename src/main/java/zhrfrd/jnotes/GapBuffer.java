@@ -49,9 +49,8 @@ public class GapBuffer {
     protected void delete() {
         if (gapStart > 0) {
             gapStart --;
+            resizeGapBuffer(buffer.length);
         }
-
-        resizeGapBuffer(buffer.length);
     }
 
     /**
