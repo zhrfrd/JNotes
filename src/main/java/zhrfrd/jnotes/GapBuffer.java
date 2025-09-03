@@ -6,17 +6,15 @@ public class GapBuffer {
     private final int DEFAULT_BUFFER_SIZE = 20;   // TODO: Change back to 1024. 20 is just for quickly test.
     /** Array that holds the text (and the gap). */
     private char[] buffer;
-    /** The index of the beginning of the gap */
+    /** The index of the beginning of the gap. It always matches the position of the cursor. */
     private int gapStart;
     /** The index of the end of the gap */
     private int gapEnd;
-    private int gapSize;
 
     public GapBuffer() {
         buffer = new char[DEFAULT_BUFFER_SIZE];
         gapStart = 0;
         gapEnd = DEFAULT_BUFFER_SIZE;
-        gapSize = gapEnd - gapStart;
     }
 
     /**
@@ -25,14 +23,14 @@ public class GapBuffer {
      * @param c The character to be inserted.
      */
     protected void insert(char c) {
+        int gapSize = gapEnd - gapStart;
         if (gapSize <= 1) {
-            resizeGapBuffer();
+            resizeGapBuffer(buffer.length * 2);
         }
 
         buffer[gapStart] = c;
         gapStart ++;
-        gapSize = gapEnd - gapStart;
-        System.out.println(gapSize);
+        System.out.println(gapSize + ", " + buffer.length);
     }
 
     /**
@@ -45,9 +43,21 @@ public class GapBuffer {
         }
     }
 
+    /**
+     * Delete the character starting from the cursor position.
+     */
     protected void delete() {
+        if (gapStart > 0) {
+            gapStart --;
+        }
+
+        resizeGapBuffer(buffer.length);
     }
 
+    /**
+     * Change the cursor position by using the arrow keys. This method also updates the gap position in the buffer.
+     * @param key Integer value of the arrow key pressed.
+     */
     protected void moveCursor(int key) {
         switch (key) {
             case KeyEvent.VK_LEFT:
@@ -60,20 +70,6 @@ public class GapBuffer {
                 break;
         }
     }
-    /*
-    BUFFER                  BUFFER SIZE         GAP SIZE
-    abc____lmn              10                  4
-    abcd___lmn              10                  3
-    abcde__lmn              10                  2
-    abcdef_lmn              10                  1
-    abcdefglmn              10                  0
-    BUFFER                  NEW BUFFER SIZE     GAP SIZE
-    abcdefg__________lmn    20                  10
-    abcdefgh_________lmn    20                  10
-    abcdefghi________lmn    20                  10
-    abcdefghij_______lmn    20                  10
-    abcdefghijk______lmn    20                  10
-    */
 
     /**
      * Resize the current buffer and its gap.
@@ -81,10 +77,12 @@ public class GapBuffer {
      *
      * <p><b>Note:</b> gapStart doesn't change during the resize process because it matches the cursor position
      * and the preceding text remains unchanged.</p>
+     *
+     * @param newBufferLength The new buffer length to assign to the buffer. The new buffer length doesn't change
+     *                        during deletion. It changes only if the gap is full during insertion.
      */
-    protected void resizeGapBuffer() {
+    protected void resizeGapBuffer(int newBufferLength) {
         int afterGapLength = buffer.length - gapEnd;
-        int newBufferLength = buffer.length * 2;
         char[] newBuffer = new char[newBufferLength];
         int newGapEnd = newBufferLength - afterGapLength;
 

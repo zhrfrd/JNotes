@@ -71,9 +71,9 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
         // Check if the character typed is a real character and not a control character such as tabs, backspaces etc.
         if (Character.isDefined(c) && !Character.isISOControl(c)) {
             gapBuffer.insert(c);
-        } else if (c == '\n') {   // New line
+        } else if (c == KeyEvent.VK_ENTER) {   // New line
 
-        } else if (c == '\b') {   // Backspace
+        } else if (c == KeyEvent.VK_BACK_SPACE) {   // Backspace
             gapBuffer.delete();
         }
 
