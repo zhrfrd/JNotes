@@ -64,12 +64,14 @@ public class GapBuffer {
                 if (gapStart > 0) {
                     gapStart --;
                     gapEnd --;
+                    moveTextAfterGap();
                 }
                 break;
             case KeyEvent.VK_RIGHT:
                 if (gapEnd < buffer.length) {
                     gapStart ++;
                     gapEnd ++;
+                    moveTextBeforeGap();
                 }
                 break;
             case KeyEvent.VK_UP:
@@ -77,18 +79,31 @@ public class GapBuffer {
             case KeyEvent.VK_DOWN:
                 break;
         }
-
-        moveTextAfterGap();
         System.out.println(buffer);
     }
-    /*
-        abcdefghij__________
-        abcdefghi__________j
-    */
+
+    private void moveTextBeforeGap() {
+        int afterGapLength = buffer.length - gapEnd;
+        char[] newBuffer = new char[buffer.length];
+        char charToMove =  buffer[gapEnd - 1];
+
+        for (int i = 0; i < gapStart; i ++) {
+            newBuffer[i] = buffer[i];
+        }
+
+        newBuffer[gapStart - 1] = charToMove;
+
+        for (int i = 0; i < afterGapLength; i ++) {
+            newBuffer[i + gapEnd] = buffer[i + gapEnd];
+        }
+
+        buffer = newBuffer;
+    }
+
     private void moveTextAfterGap() {
         int afterGapLength = buffer.length - gapEnd;
         char[] newBuffer = new char[buffer.length];
-        char charToMove = buffer[gapStart];
+        char charToMove =  buffer[gapStart];
 
         for (int i = 0; i < gapStart; i ++) {
             newBuffer[i] = buffer[i];
