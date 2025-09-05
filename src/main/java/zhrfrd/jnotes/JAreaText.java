@@ -40,23 +40,19 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
     }
 
     private void drawCaret(Graphics g, int lineHeight) {
-        /*
-        To draw a caret use:
-
         Graphics2D g2 = (Graphics2D)g;
-        int lineTextLength = g.getFontMetrics().stringWidth(lineText);
+        int lineTextLength = g.getFontMetrics().stringWidth(gapBuffer.getText(0, gapBuffer.getGapStart()));
         int caretX = START_X + lineTextLength;
         int caretY = caretRow * lineHeight + 5;
         g2.setStroke(new BasicStroke(2));
         g2.drawLine(caretX, caretY, caretX, caretY + lineHeight - 2);
-         */
+
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         int lineHeight = g.getFontMetrics().getHeight();
-
         drawText(g, lineHeight);
 
         if (caretVisible && isFocusOwner()) {
@@ -72,7 +68,7 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
         if (Character.isDefined(c) && !Character.isISOControl(c)) {
             gapBuffer.insert(c);
         } else if (c == KeyEvent.VK_ENTER) {   // New line
-
+            caretRow ++;
         } else if (c == KeyEvent.VK_BACK_SPACE) {   // Backspace
             gapBuffer.delete();
         }
@@ -84,12 +80,10 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
     public void keyPressed(KeyEvent e) {
         caretVisible = true;
 
-        if (e.getKeyChar() == KeyEvent.VK_LEFT || e.getKeyChar() == KeyEvent.VK_RIGHT || e.getKeyChar() == KeyEvent.VK_UP || e.getKeyChar() == KeyEvent.VK_DOWN) {
-            gapBuffer.moveCursor(e.getKeyChar());
+        if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
+            gapBuffer.moveCursor(e.getKeyCode());
             repaint();
         }
-
-//        repaint();
     }
 
     @Override

@@ -30,7 +30,7 @@ public class GapBuffer {
 
         buffer[gapStart] = c;
         gapStart ++;
-        System.out.println(gapSize + ", " + buffer.length);
+        System.out.println(buffer);
     }
 
     /**
@@ -49,8 +49,9 @@ public class GapBuffer {
     protected void delete() {
         if (gapStart > 0) {
             gapStart --;
-            resizeGapBuffer(buffer.length);
         }
+        resizeGapBuffer(buffer.length);
+        System.out.println(buffer);
     }
 
     /**
@@ -60,14 +61,46 @@ public class GapBuffer {
     protected void moveCursor(int key) {
         switch (key) {
             case KeyEvent.VK_LEFT:
+                if (gapStart > 0) {
+                    gapStart --;
+                    gapEnd --;
+                }
                 break;
             case KeyEvent.VK_RIGHT:
+                if (gapEnd < buffer.length) {
+                    gapStart ++;
+                    gapEnd ++;
+                }
                 break;
             case KeyEvent.VK_UP:
                 break;
             case KeyEvent.VK_DOWN:
                 break;
         }
+
+        moveTextAfterGap();
+        System.out.println(buffer);
+    }
+    /*
+        abcdefghij__________
+        abcdefghi__________j
+    */
+    private void moveTextAfterGap() {
+        int afterGapLength = buffer.length - gapEnd;
+        char[] newBuffer = new char[buffer.length];
+        char charToMove = buffer[gapStart];
+
+        for (int i = 0; i < gapStart; i ++) {
+            newBuffer[i] = buffer[i];
+        }
+
+        newBuffer[gapEnd] = charToMove;
+
+        for (int i = 1; i < afterGapLength; i ++) {
+            newBuffer[i + gapEnd] = buffer[i + gapEnd];
+        }
+
+        buffer = newBuffer;
     }
 
     /**
@@ -101,5 +134,17 @@ public class GapBuffer {
 
     protected String getText() {
         return String.valueOf(buffer);
+    }
+
+    protected String getText(int start, int end) {
+        return String.valueOf(buffer).substring(start, end);
+    }
+
+    protected int getGapStart() {
+        return gapStart;
+    }
+
+    protected int getGapEnd() {
+        return gapEnd;
     }
 }
