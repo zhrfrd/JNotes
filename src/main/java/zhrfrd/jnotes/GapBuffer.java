@@ -34,7 +34,7 @@ public class GapBuffer {
     }
 
     /**
-     * Insert a string in the gap (cursor position) and reduce the gap size by the number of size of the string inserted.
+     * Insert a whole string in the gap (cursor position) and reduce the gap size by the number of size of the string inserted.
      * @param str String to be inserted.
      */
     protected void insert(String str) {
@@ -64,14 +64,14 @@ public class GapBuffer {
                 if (gapStart > 0) {
                     gapStart --;
                     gapEnd --;
-                    moveTextAfterGap();
+                    moveGap(KeyEvent.VK_LEFT);
                 }
                 break;
             case KeyEvent.VK_RIGHT:
                 if (gapEnd < buffer.length) {
                     gapStart ++;
                     gapEnd ++;
-                    moveTextBeforeGap();
+                    moveGap(KeyEvent.VK_RIGHT);
                 }
                 break;
             case KeyEvent.VK_UP:
@@ -82,37 +82,34 @@ public class GapBuffer {
         System.out.println(buffer);
     }
 
-    private void moveTextBeforeGap() {
+    /**
+     * Move the gap in accordance to the direction input by the user.
+     * <p><b>Note:</b> Moving the gap will also change the position of the character at the caret position accordingly.</p
+     * @param direction The {@code KeyEvent} Integer value of the direction input by the user:
+     *                  {@code VK_LEFT}, {@code VK_RIGHT}.
+     */
+    private void moveGap(int direction) {
         int afterGapLength = buffer.length - gapEnd;
         char[] newBuffer = new char[buffer.length];
-        char charToMove =  buffer[gapEnd - 1];
 
         for (int i = 0; i < gapStart; i ++) {
             newBuffer[i] = buffer[i];
         }
 
-        newBuffer[gapStart - 1] = charToMove;
+        if (direction == KeyEvent.VK_LEFT) {
+            char charToMove =  buffer[gapStart];
+            newBuffer[gapEnd] = charToMove;
 
-        for (int i = 0; i < afterGapLength; i ++) {
-            newBuffer[i + gapEnd] = buffer[i + gapEnd];
-        }
+            for (int i = 1; i < afterGapLength; i ++) {
+                newBuffer[i + gapEnd] = buffer[i + gapEnd];
+            }
+        } else if (direction == KeyEvent.VK_RIGHT) {
+            char charToMove =  buffer[gapEnd - 1];
+            newBuffer[gapStart - 1] = charToMove;
 
-        buffer = newBuffer;
-    }
-
-    private void moveTextAfterGap() {
-        int afterGapLength = buffer.length - gapEnd;
-        char[] newBuffer = new char[buffer.length];
-        char charToMove =  buffer[gapStart];
-
-        for (int i = 0; i < gapStart; i ++) {
-            newBuffer[i] = buffer[i];
-        }
-
-        newBuffer[gapEnd] = charToMove;
-
-        for (int i = 1; i < afterGapLength; i ++) {
-            newBuffer[i + gapEnd] = buffer[i + gapEnd];
+            for (int i = 0; i < afterGapLength; i ++) {
+                newBuffer[i + gapEnd] = buffer[i + gapEnd];
+            }
         }
 
         buffer = newBuffer;
