@@ -11,15 +11,11 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
     private static final int START_X = 10;
     /** Vertically offsets the caret slightly so it appears centered with the text. */
     private static final int CARET_Y_OFFSET = 5;
-    private GapBuffer gapBuffer;
-    private int caretRow;
-    private int caretCol;
+    private final GapBuffer gapBuffer;
     private boolean caretVisible;
 
     public JAreaText() {
         gapBuffer = new GapBuffer();
-        caretRow = 0;
-        caretCol = 0;
         caretVisible = true;
 
         setBackground(Color.BLACK);
@@ -50,17 +46,13 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
 
     private void drawCaret(Graphics g, int lineHeight) {
         Graphics2D g2 = (Graphics2D)g;
-        
-        // Get text up to cursor position.
-        String textUpToCursor = gapBuffer.getText(0, gapBuffer.getGapStart());
-        
-        // Split into lines to find which line the cursor is on.
+
+        String textUpToCursor = gapBuffer.getText(0, gapBuffer.getGapStart());   // Whole text until the caret.
         String[] lines = textUpToCursor.split("\n", -1);
-        int currentLineIndex = lines.length - 1;
-        String currentLineText = lines[currentLineIndex];
-        
-        // Calculate caret position
-        int lineTextLength = g.getFontMetrics().stringWidth(currentLineText);
+        int currentLineIndex = lines.length - 1;   // Line index where the cursor is currently on.
+        String lineTextUpToCursor = lines[currentLineIndex];   // Line text until the caret.
+
+        int lineTextLength = g.getFontMetrics().stringWidth(lineTextUpToCursor);
         int caretX = START_X + lineTextLength;
         int caretY = (currentLineIndex * lineHeight) + CARET_Y_OFFSET;
         
@@ -88,8 +80,6 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
             gapBuffer.insert(c);
         } else if (c == KeyEvent.VK_ENTER) {   // New line
             gapBuffer.insert('\n');
-            caretRow ++;
-            caretCol = 0;
         } else if (c == KeyEvent.VK_BACK_SPACE) {   // Backspace
             gapBuffer.delete();
         }

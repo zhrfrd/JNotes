@@ -30,6 +30,8 @@ public class GapBuffer {
 
         buffer[gapStart] = c;
         gapStart ++;
+
+        System.out.println("---------");
         System.out.println(buffer);
     }
 
