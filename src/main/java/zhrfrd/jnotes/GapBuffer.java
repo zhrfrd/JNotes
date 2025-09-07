@@ -53,7 +53,7 @@ public class GapBuffer {
             gapStart --;
         }
         resizeGapBuffer(buffer.length);
-        System.out.println(buffer);
+//        System.out.println(buffer);
     }
 
     /**
@@ -76,12 +76,33 @@ public class GapBuffer {
                     moveGap(KeyEvent.VK_RIGHT);
                 }
                 break;
+            /*
+            - Find number of chars in the current line (Where the cursor is).
+            - Do the operation to move the gapStart and gapEnd in the line above at the same chars position of the prevoius cursor position.
+
+             */
             case KeyEvent.VK_UP:
+                String textUpToCursor = getText(0, getGapStart());
+                String[] linesUpToCursor = textUpToCursor.split("\n", -1);   // -1 keeps empty strings at the end.
+
+                if (linesUpToCursor.length > 1) {
+                    int currentLineIndex = textUpToCursor.lastIndexOf("\n");   // Total number of characters until the beginning of the current line.
+                    int currentLineLengthBeforeGap = gapStart - currentLineIndex - 1;
+                    String previousLine = linesUpToCursor[linesUpToCursor.length - 2];
+
+                    if (previousLine.length() >= currentLineLengthBeforeGap) {
+                        gapStart -= previousLine.length() + 1;
+                        gapEnd -= previousLine.length() + 1;
+                    } else {
+                        gapStart -= currentLineLengthBeforeGap + 1;
+                        gapEnd -= currentLineLengthBeforeGap + 1;
+                    }
+                }
                 break;
             case KeyEvent.VK_DOWN:
                 break;
         }
-        System.out.println(buffer);
+//        System.out.println(buffer);
     }
 
     /**
@@ -112,6 +133,8 @@ public class GapBuffer {
             for (int i = 0; i < afterGapLength; i ++) {
                 newBuffer[i + gapEnd] = buffer[i + gapEnd];
             }
+        } else if (direction == KeyEvent.VK_UP) {
+            
         }
 
         buffer = newBuffer;
