@@ -58,10 +58,11 @@ public class GapBuffer {
 
     /**
      * Change the cursor position by using the arrow keys. This method also updates the gap position in the buffer.
-     * @param key Integer value of the arrow key pressed.
+     * @param direction The {@code KeyEvent} Integer value of the direction input by the user:
+     *                  {@code VK_LEFT}, {@code VK_RIGHT}, {@code VK_UP} and {@code VK_DOWN}.
      */
-    protected void moveCursor(int key) {
-        switch (key) {
+    protected void moveCursor(int direction) {
+        switch (direction) {
             case KeyEvent.VK_LEFT:
                 if (gapStart > 0) {
                     gapStart --;
@@ -76,11 +77,6 @@ public class GapBuffer {
                     moveGap(KeyEvent.VK_RIGHT);
                 }
                 break;
-            /*
-            - Find number of chars in the current line (Where the cursor is).
-            - Do the operation to move the gapStart and gapEnd in the line above at the same chars position of the prevoius cursor position.
-
-             */
             case KeyEvent.VK_UP:
                 String textUpToCursor = getText(0, getGapStart());
                 String[] linesUpToCursor = textUpToCursor.split("\n", -1);   // -1 keeps empty strings at the end.
@@ -97,6 +93,7 @@ public class GapBuffer {
                         gapStart -= currentLineLengthBeforeGap + 1;
                         gapEnd -= currentLineLengthBeforeGap + 1;
                     }
+                    moveGap(KeyEvent.VK_UP);
                 }
                 break;
             case KeyEvent.VK_DOWN:
@@ -109,7 +106,7 @@ public class GapBuffer {
      * Move the gap in accordance to the direction input by the user.
      * <p><b>Note:</b> Moving the gap will also change the position of the character at the caret position accordingly.</p
      * @param direction The {@code KeyEvent} Integer value of the direction input by the user:
-     *                  {@code VK_LEFT}, {@code VK_RIGHT}.
+     *                  {@code VK_LEFT}, {@code VK_RIGHT}, {@code VK_UP} and {@code VK_DOWN}.
      */
     private void moveGap(int direction) {
         int afterGapLength = buffer.length - gapEnd;
@@ -134,7 +131,17 @@ public class GapBuffer {
                 newBuffer[i + gapEnd] = buffer[i + gapEnd];
             }
         } else if (direction == KeyEvent.VK_UP) {
-            
+            int gapSize = gapEnd - gapStart;
+            StringBuilder sb = new StringBuilder(gapSize);
+
+            for (char c : buffer) {
+                if (c != '\u0000') {
+                    sb.append(c);
+                }
+            }
+            for (int i = 0; i < afterGapLength; i ++) {
+                newBuffer[i + gapEnd] = sb.charAt(i + gapStart);
+            }
         }
 
         buffer = newBuffer;
@@ -170,11 +177,29 @@ public class GapBuffer {
     }
 
     protected String getText() {
-        return String.valueOf(buffer);
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < gapStart; i ++) {
+            sb.append(buffer[i]);
+        }
+
+        for (int i = gapEnd; i < buffer.length; i ++) {
+            sb.append(buffer[i]);
+        }
+
+        return sb.toString();
     }
 
     protected String getText(int start, int end) {
-        return String.valueOf(buffer).substring(start, end);
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = start; i < end; i ++) {
+            sb.append(buffer[i]);
+        }
+
+        return sb.toString();
+
+//        return String.valueOf(buffer).substring(start, end);
     }
 
     protected int getGapStart() {

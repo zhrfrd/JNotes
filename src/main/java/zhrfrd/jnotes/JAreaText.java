@@ -23,6 +23,9 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
         addKeyListener(this);
         addFocusListener(this);
 
+        // Set a monospace font so all characters have the same width
+        setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+
         // Timer for caret blinking
         Timer timer = new Timer(500, e -> {
             caretVisible = !caretVisible;
