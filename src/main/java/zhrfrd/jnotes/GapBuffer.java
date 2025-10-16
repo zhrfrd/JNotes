@@ -46,14 +46,13 @@ public class GapBuffer {
     }
 
     /**
-     * Delete the character starting from the cursor position.
+     * Delete the character starting from the cursor position to the left.
      */
     protected void delete() {
         if (gapStart > 0) {
             gapStart --;
         }
         resizeGapBuffer(buffer.length);
-//        System.out.println(buffer);
     }
 
     /**
@@ -77,8 +76,8 @@ public class GapBuffer {
                     moveGap(KeyEvent.VK_RIGHT);
                 }
                 break;
-            case KeyEvent.VK_UP:
-                String textUpToCursor = getText(0, getGapStart());
+            case KeyEvent.VK_UP: {
+                String textUpToCursor = getText(getGapStart());
                 String[] linesUpToCursor = textUpToCursor.split("\n", -1);   // -1 keeps empty strings at the end.
 
                 if (linesUpToCursor.length > 1) {
@@ -96,10 +95,30 @@ public class GapBuffer {
                     moveGap(KeyEvent.VK_UP);
                 }
                 break;
-            case KeyEvent.VK_DOWN:
+            }
+            case KeyEvent.VK_DOWN: {
+                String text = getText();
+                String textUpToCursor = getText(getGapStart());
+                String[] linesUpToCursor = textUpToCursor.split("\n", -1);   // -1 keeps empty strings at the end.
+                String[] lines = text.split("\n", -1);
+
+                if (linesUpToCursor.length < lines.length) {
+                    int currentLineIndex = textUpToCursor.lastIndexOf("\n");   // Total number of characters until the beginning of the current line.
+                    int currentLineLengthBeforeGap = gapStart - currentLineIndex - 1;
+                    int currentLineLength = lines[linesUpToCursor.length].length();
+                    String nextLine = lines[linesUpToCursor.length];
+
+                    if (nextLine.length() >= currentLineLengthBeforeGap) {
+
+                    } else {
+                        gapStart += currentLineLength;   // TODO: Maybe currentLineLength - 1
+                        gapEnd += currentLineLength;     //
+                    }
+                    moveGap(KeyEvent.VK_DOWN);
+                }
                 break;
+            }
         }
-//        System.out.println(buffer);
     }
 
     /**
@@ -134,11 +153,13 @@ public class GapBuffer {
             int gapSize = gapEnd - gapStart;
             StringBuilder sb = new StringBuilder(gapSize);
 
+            // Create a StringBuilder out of the buffer without the empty spaces from the gap.
             for (char c : buffer) {
                 if (c != '\u0000') {
                     sb.append(c);
                 }
             }
+
             for (int i = 0; i < afterGapLength; i ++) {
                 newBuffer[i + gapEnd] = sb.charAt(i + gapStart);
             }
@@ -190,16 +211,14 @@ public class GapBuffer {
         return sb.toString();
     }
 
-    protected String getText(int start, int end) {
+    protected String getText(int end) {
         StringBuilder sb = new StringBuilder();
 
-        for (int i = start; i < end; i ++) {
+        for (int i = 0; i < end; i ++) {
             sb.append(buffer[i]);
         }
 
         return sb.toString();
-
-//        return String.valueOf(buffer).substring(start, end);
     }
 
     protected int getGapStart() {

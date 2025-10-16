@@ -50,7 +50,7 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
     private void drawCaret(Graphics g, int lineHeight) {
         Graphics2D g2 = (Graphics2D)g;
 
-        String textUpToCursor = gapBuffer.getText(0, gapBuffer.getGapStart());   // Whole text until the caret.
+        String textUpToCursor = gapBuffer.getText(gapBuffer.getGapStart());   // Whole text until the caret.
         String[] lines = textUpToCursor.split("\n", -1);
         int currentLineIndex = lines.length - 1;   // Line index where the cursor is currently on.
         String lineTextUpToCursor = lines[currentLineIndex];   // Line text until the caret.
