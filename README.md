@@ -19,9 +19,9 @@ structure which reduces the time complexity of insertion and deletion to O(1). T
     - [x] Reset gap position.
   - [x] Move cursor right with keystrokes.
     - [x] Reset gap position.
-  - [x] Move cursor up following the right "columns" on the y-axis with keystrokes.
+  - [x] Move cursor up following the correct "columns" on the y-axis with keystrokes.
     - [x] Reset gap position.
-  - [ ] Move cursor down following the right "columns" on the y-axis with keystrokes.
+  - [ ] Move cursor down following the correct "columns" on the y-axis with keystrokes.
     - [ ] Reset gap position.
   - [ ] Move cursor with the mouse.
     - [ ] Reset gap position.
