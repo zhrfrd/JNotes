@@ -31,8 +31,8 @@ public class GapBuffer {
         buffer[gapStart] = c;
         gapStart ++;
 
-        System.out.println("---------");
-        System.out.println(buffer);
+//        System.out.println("---------");
+//        System.out.println(buffer);
     }
 
     /**
@@ -77,7 +77,7 @@ public class GapBuffer {
                 }
                 break;
             case KeyEvent.VK_UP: {
-                String textUpToCursor = getText(getGapStart());
+                String textUpToCursor = getText(getGapStart());   // NOTE: The cursor has not been moved yet.
                 String[] linesUpToCursor = textUpToCursor.split("\n", -1);   // -1 keeps empty strings at the end.
 
                 if (linesUpToCursor.length > 1) {
@@ -98,17 +98,20 @@ public class GapBuffer {
             }
             case KeyEvent.VK_DOWN: {
                 String text = getText();
-                String textUpToCursor = getText(getGapStart());
+                String textUpToCursor = getText(getGapStart());   // NOTE: The cursor has not been moved yet.
                 String[] linesUpToCursor = textUpToCursor.split("\n", -1);   // -1 keeps empty strings at the end.
                 String[] lines = text.split("\n", -1);
 
                 if (linesUpToCursor.length < lines.length) {
-                    int currentLineIndex = textUpToCursor.lastIndexOf("\n");   // Total number of characters until the beginning of the current line.
-                    int currentLineLengthBeforeGap = gapStart - currentLineIndex - 1;
-                    int currentLineLength = lines[linesUpToCursor.length].length();
+                    int charsCountBeforeCurrentLine = textUpToCursor.lastIndexOf("\n");   // Total number of characters until the beginning of the current line (Included backspaces).
+                    System.out.println("Chars count before current line: " + charsCountBeforeCurrentLine);
+                    int charsCountBeforeGapInCurrentLine = gapStart - charsCountBeforeCurrentLine - 1;
+                    System.out.println("Chars count before gap in current line:" + charsCountBeforeGapInCurrentLine);
+                    int currentLineLength = lines[linesUpToCursor.length - 1].length();
+                    System.out.println("Current line length:" + currentLineLength);
                     String nextLine = lines[linesUpToCursor.length];
 
-                    if (nextLine.length() >= currentLineLengthBeforeGap) {
+                    if (nextLine.length() >= charsCountBeforeGapInCurrentLine) {
 
                     } else {
                         gapStart += currentLineLength;   // TODO: Maybe currentLineLength - 1
@@ -153,7 +156,7 @@ public class GapBuffer {
             int gapSize = gapEnd - gapStart;
             StringBuilder sb = new StringBuilder(gapSize);
 
-            // Create a StringBuilder out of the buffer without the empty spaces from the gap.
+            // Create a StringBuilder from the buffer without the empty spaces of the gap.
             for (char c : buffer) {
                 if (c != '\u0000') {
                     sb.append(c);
@@ -163,6 +166,8 @@ public class GapBuffer {
             for (int i = 0; i < afterGapLength; i ++) {
                 newBuffer[i + gapEnd] = sb.charAt(i + gapStart);
             }
+        } else if (direction == KeyEvent.VK_DOWN) {
+
         }
 
         buffer = newBuffer;
@@ -211,6 +216,11 @@ public class GapBuffer {
         return sb.toString();
     }
 
+    /**
+     * Get text up until the index indicated in the parameter.
+     * @param end The index up until to extract the text.
+     * @return The text in String format.
+     */
     protected String getText(int end) {
         StringBuilder sb = new StringBuilder();
 
