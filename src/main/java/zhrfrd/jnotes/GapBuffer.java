@@ -30,9 +30,6 @@ public class GapBuffer {
 
         buffer[gapStart] = c;
         gapStart ++;
-
-//        System.out.println("---------");
-//        System.out.println(buffer);
     }
 
     /**
@@ -109,18 +106,12 @@ public class GapBuffer {
                     int charsCountAfterGapInCurrentLine = currentLineLength - charsCountBeforeGapInCurrentLine;
                     String nextLine = lines[linesUpToCursor.length];
 
-                    System.out.println("Chars count before current line: " + charsCountBeforeCurrentLine);
-                    System.out.println("Chars count before gap in current line: " + charsCountBeforeGapInCurrentLine);
-                    System.out.println("Current line length: " + currentLineLength);
-                    System.out.println("Char count after gap in current line: " + charsCountAfterGapInCurrentLine);
-                    System.out.println("Next line: " + nextLine);
-
                     if (nextLine.length() > charsCountBeforeGapInCurrentLine) {
-                        gapStart += currentLineLength;   // TODO: Maybe currentLineLength - 1
-                        gapEnd += currentLineLength;     //
+                        gapStart += currentLineLength + 1;
+                        gapEnd += currentLineLength + 1;
                     } else {
-                        gapStart += charsCountAfterGapInCurrentLine + nextLine.length();
-                        gapEnd += charsCountAfterGapInCurrentLine + nextLine.length();
+                        gapStart += charsCountAfterGapInCurrentLine + nextLine.length() + 1;
+                        gapEnd += charsCountAfterGapInCurrentLine + nextLine.length() + 1;
                     }
                     moveGap(KeyEvent.VK_DOWN);
                 }
@@ -160,8 +151,7 @@ public class GapBuffer {
                 newBuffer[gapEnd + i] = buffer[gapEnd + i];
             }
         } else if (direction == KeyEvent.VK_UP) {
-            int gapSize = gapEnd - gapStart;
-            StringBuilder sb = new StringBuilder(gapSize);   // TODO: Remove gapSize in the parameter
+            StringBuilder sb = new StringBuilder();   // TODO: Remove gapSize in the parameter
 
             // Create a StringBuilder from the buffer without the empty spaces of the gap.
             for (char c : buffer) {
@@ -186,7 +176,6 @@ public class GapBuffer {
             for (int i = 0; i < gapStart; i ++) {
                 newBuffer[i] = sb.charAt(i);
             }
-
             for (int i = 0; i < charsCountAfterGap; i ++) {
                 newBuffer[gapEnd + i] = sb.charAt(gapStart + i);
             }
