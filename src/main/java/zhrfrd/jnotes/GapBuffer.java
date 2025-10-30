@@ -53,6 +53,18 @@ public class GapBuffer {
     }
 
     /**
+     * Get the character immediately before the cursor.
+     * @return The character immediately before the cursor (to the left), or null if it's at the start of the buffer.
+     */
+    protected Character getCharBeforeCursor() {
+        if (gapStart == 0) {
+            return null;
+        }
+
+        return buffer[gapStart - 1];
+    }
+
+    /**
      * Change the cursor position by using the arrow keys. This method also updates the gap position in the buffer.
      * @param direction The {@code KeyEvent} Integer value of the direction input by the user:
      *                  {@code VK_LEFT}, {@code VK_RIGHT}, {@code VK_UP} and {@code VK_DOWN}.
@@ -101,17 +113,17 @@ public class GapBuffer {
 
                 if (linesUpToCursor.length < lines.length) {
                     int charsCountBeforeCurrentLine = textUpToCursor.lastIndexOf("\n");   // Total number of characters until the beginning of the current line (Included backspaces).
-                    int charsCountBeforeGapInCurrentLine = gapStart - charsCountBeforeCurrentLine - 1;
+                    int charsCountInCurrentLineBeforeGap = gapStart - charsCountBeforeCurrentLine - 1;
                     int currentLineLength = lines[linesUpToCursor.length - 1].length();
-                    int charsCountAfterGapInCurrentLine = currentLineLength - charsCountBeforeGapInCurrentLine;
+                    int charsCountInCurrentLineAfterGap = currentLineLength - charsCountInCurrentLineBeforeGap;
                     String nextLine = lines[linesUpToCursor.length];
 
-                    if (nextLine.length() > charsCountBeforeGapInCurrentLine) {
+                    if (nextLine.length() > charsCountInCurrentLineBeforeGap) {
                         gapStart += currentLineLength + 1;
                         gapEnd += currentLineLength + 1;
                     } else {
-                        gapStart += charsCountAfterGapInCurrentLine + nextLine.length() + 1;
-                        gapEnd += charsCountAfterGapInCurrentLine + nextLine.length() + 1;
+                        gapStart += charsCountInCurrentLineAfterGap + nextLine.length() + 1;
+                        gapEnd += charsCountInCurrentLineAfterGap + nextLine.length() + 1;
                     }
                     moveGap(KeyEvent.VK_DOWN);
                 }

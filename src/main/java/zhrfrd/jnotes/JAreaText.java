@@ -12,10 +12,12 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
     /** Vertically offsets the caret slightly so it appears centered with the text. */
     private static final int CARET_Y_OFFSET = 5;
     private final GapBuffer gapBuffer;
+    private final CommandManager commandManager;
     private boolean caretVisible;
 
     public JAreaText() {
         gapBuffer = new GapBuffer();
+        commandManager = new CommandManager();
         caretVisible = true;
 
         setBackground(Color.BLACK);
@@ -80,11 +82,11 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
 
         // Check if the character typed is a real character and not a control character such as tabs, backspaces etc.
         if (Character.isDefined(c) && !Character.isISOControl(c)) {
-            gapBuffer.insert(c);
+            commandManager.execute(new InsertCharCommand(gapBuffer, c));
         } else if (c == KeyEvent.VK_ENTER) {   // New line
-            gapBuffer.insert('\n');
+            commandManager.execute(new InsertCharCommand(gapBuffer, '\n'));
         } else if (c == KeyEvent.VK_BACK_SPACE) {   // Backspace
-            gapBuffer.delete();
+            commandManager.execute(new DeleteCharCommand(gapBuffer));
         }
 
         repaint();
