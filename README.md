@@ -29,8 +29,6 @@ and *Open/Closed Principle*.
     - [x] Reset gap position.
   - [ ] Move cursor with the mouse.
     - [ ] Reset gap position.
-- [ ] Implement Undo.
-- [ ] Implement Redo.
 - [ ] Add support for deleting characters:
   - [x] Delete characters before the cursor.
   - [ ] Delete characters after the cursor.
@@ -41,6 +39,8 @@ and *Open/Closed Principle*.
 - [x] Start a new line when pressing Enter.
 - [x] Implement a custom "text area" without relying on `JTextArea` from the Swing library or similar components.
 - [x] Change font from "proportional font" to "monospace font";
+- [x] Implement Undo.
+- [x] Implement Redo.
 
 ## Improvements
 - [ ] Improve the loop that iterates through each line in `paintComponent()`. At the moment the loop runs at each timer tick and this increases with the number of new lines.
