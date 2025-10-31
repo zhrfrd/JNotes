@@ -94,11 +94,28 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        boolean isModifierDown = e.isControlDown() || e.isMetaDown();
         caretVisible = true;
+
+        // Handle Redo first so Cmd + Shift + Z does not get caught by Undo branch
+        if (isModifierDown && (e.getKeyCode() == KeyEvent.VK_Y || (e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Z))) {
+            commandManager.redo();
+            repaint();
+            e.consume();
+            return;
+        }
+        // Undo
+        if (isModifierDown && e.getKeyCode() == KeyEvent.VK_Z) {
+            commandManager.undo();
+            repaint();
+            e.consume();
+            return;
+        }
 
         if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
             gapBuffer.moveCursor(e.getKeyCode());
             repaint();
+            e.consume();
         }
     }
 

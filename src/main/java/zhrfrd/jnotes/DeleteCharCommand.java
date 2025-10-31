@@ -2,6 +2,7 @@ package zhrfrd.jnotes;
 
 public class DeleteCharCommand implements Command {
     private final GapBuffer gapBuffer;
+    private Character deletedCharacter;
 
     public DeleteCharCommand(GapBuffer gapBuffer) {
         this.gapBuffer = gapBuffer;
@@ -9,15 +10,21 @@ public class DeleteCharCommand implements Command {
 
     @Override
     public void execute() {
-        Character c = gapBuffer.getCharBeforeCursor();
-
-        if (c == null) {
+        if (gapBuffer.getCharBeforeCursor() == null) {
             return;
         }
-
+        deletedCharacter = gapBuffer.getCharBeforeCursor();
         gapBuffer.delete();
     }
+
+    @Override
+    public void undo() {
+        if (deletedCharacter != null) {
+            gapBuffer.insert(deletedCharacter);
+        }
+    }
 }
+
 
 
 

@@ -13,7 +13,16 @@ public class InsertCharCommand implements Command {
     public void execute() {
         gapBuffer.insert(character);
     }
+
+    @Override
+    public void undo() {
+        if (gapBuffer.getCharBeforeCursor() == null) {
+            return;
+        }
+        gapBuffer.delete();
+    }
 }
+
 
 
 

@@ -24,6 +24,7 @@ public class GapBuffer {
      */
     protected void insert(char c) {
         int gapSize = gapEnd - gapStart;
+
         if (gapSize <= 1) {
             resizeGapBuffer(buffer.length * 2);
         }
@@ -256,9 +257,5 @@ public class GapBuffer {
 
     protected int getGapStart() {
         return gapStart;
-    }
-
-    protected int getGapEnd() {
-        return gapEnd;
     }
 }
