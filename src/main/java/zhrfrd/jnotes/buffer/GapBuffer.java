@@ -1,4 +1,4 @@
-package zhrfrd.jnotes;
+package zhrfrd.jnotes.buffer;
 
 import java.awt.event.KeyEvent;
 
@@ -22,7 +22,7 @@ public class GapBuffer {
      * If the size of the gap is 0, resize the gap.
      * @param c The character to be inserted.
      */
-    protected void insert(char c) {
+    public void insert(char c) {
         int gapSize = gapEnd - gapStart;
 
         if (gapSize <= 1) {
@@ -46,7 +46,7 @@ public class GapBuffer {
     /**
      * Delete the character starting from the cursor position to the left.
      */
-    protected void delete() {
+    public void delete() {
         if (gapStart > 0) {
             gapStart --;
         }
@@ -57,7 +57,7 @@ public class GapBuffer {
      * Get the character immediately before the cursor.
      * @return The character immediately before the cursor (to the left), or null if it's at the start of the buffer.
      */
-    protected Character getCharBeforeCursor() {
+    public Character getCharBeforeCursor() {
         if (gapStart == 0) {
             return null;
         }
@@ -70,7 +70,7 @@ public class GapBuffer {
      * @param direction The {@code KeyEvent} Integer value of the direction input by the user:
      *                  {@code VK_LEFT}, {@code VK_RIGHT}, {@code VK_UP} and {@code VK_DOWN}.
      */
-    protected void moveCursor(int direction) {
+    public void moveCursor(int direction) {
         switch (direction) {
             case KeyEvent.VK_LEFT:
                 if (gapStart > 0) {
@@ -226,7 +226,7 @@ public class GapBuffer {
         gapEnd = newGapEnd;
     }
 
-    protected String getText() {
+    public String getText() {
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < gapStart; i ++) {
@@ -245,7 +245,7 @@ public class GapBuffer {
      * @param end The index up until to extract the text.
      * @return The text in String format.
      */
-    protected String getText(int end) {
+    public String getText(int end) {
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < end; i ++) {
@@ -255,7 +255,7 @@ public class GapBuffer {
         return sb.toString();
     }
 
-    protected int getGapStart() {
+    public int getGapStart() {
         return gapStart;
     }
 }

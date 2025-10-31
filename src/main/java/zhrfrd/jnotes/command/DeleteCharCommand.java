@@ -1,4 +1,6 @@
-package zhrfrd.jnotes;
+package zhrfrd.jnotes.command;
+
+import zhrfrd.jnotes.buffer.GapBuffer;
 
 public class DeleteCharCommand implements Command {
     private final GapBuffer gapBuffer;

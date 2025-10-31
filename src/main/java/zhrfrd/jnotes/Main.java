@@ -1,5 +1,7 @@
 package zhrfrd.jnotes;
 
+import zhrfrd.jnotes.ui.JAreaText;
+
 import javax.swing.*;
 
 public class Main {

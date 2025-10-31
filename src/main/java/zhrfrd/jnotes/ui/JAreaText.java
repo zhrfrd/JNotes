@@ -1,4 +1,9 @@
-package zhrfrd.jnotes;
+package zhrfrd.jnotes.ui;
+
+import zhrfrd.jnotes.command.CommandManager;
+import zhrfrd.jnotes.command.DeleteCharCommand;
+import zhrfrd.jnotes.buffer.GapBuffer;
+import zhrfrd.jnotes.command.InsertCharCommand;
 
 import javax.swing.*;
 import java.awt.*;

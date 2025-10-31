@@ -1,4 +1,4 @@
-package zhrfrd.jnotes;
+package zhrfrd.jnotes.command;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
