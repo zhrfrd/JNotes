@@ -12,7 +12,7 @@ public class DeleteCharCommand implements Command {
 
     @Override
     public void execute() {
-        if (gapBuffer.getCharBeforeCursor() == null) {
+        if (gapBuffer.getCharBeforeCursor() == '\0') {
             return;
         }
         deletedCharacter = gapBuffer.getCharBeforeCursor();

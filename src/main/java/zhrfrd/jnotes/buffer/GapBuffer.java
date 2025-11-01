@@ -61,11 +61,11 @@ public class GapBuffer {
 
     /**
      * Get the character immediately before the cursor.
-     * @return The character immediately before the cursor (to the left), or null if it's at the start of the buffer.
+     * @return The character immediately before the cursor (to the left), or '\0' (null) if it's at the start of the buffer.
      */
-    public Character getCharBeforeCursor() {
+    public char getCharBeforeCursor() {
         if (gapStart == 0) {
-            return null;
+            return '\0';
         }
 
         return buffer[gapStart - 1];
@@ -269,7 +269,7 @@ public class GapBuffer {
         return gapEnd;
     }
 
-    public int getBufferLength() {
+    public int getBufferSize() {
         return buffer.length;
     }
 }

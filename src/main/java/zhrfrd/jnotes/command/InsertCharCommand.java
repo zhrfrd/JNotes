@@ -18,7 +18,7 @@ public class InsertCharCommand implements Command {
 
     @Override
     public void undo() {
-        if (gapBuffer.getCharBeforeCursor() == null) {
+        if (gapBuffer.getCharBeforeCursor() == '\0') {
             return;
         }
         gapBuffer.delete();
