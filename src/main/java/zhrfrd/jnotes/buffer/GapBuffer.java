@@ -17,6 +17,12 @@ public class GapBuffer {
         gapEnd = DEFAULT_BUFFER_SIZE;
     }
 
+    public GapBuffer(int bufferSize) {
+        buffer = new char[bufferSize];
+        gapStart = 0;
+        gapEnd = bufferSize;
+    }
+
     /**
      * Insert a character inside the gap (cursor position) and reduce the gap size by the number of characters inserted.
      * If the size of the gap is 0, resize the gap.
