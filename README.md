@@ -17,6 +17,29 @@ To manage user operations such as character insertion and deletion in a structur
 the [Command design pattern](https://refactoring.guru/design-patterns/command) which enforces the *Single Responsibility Principle*
 and *Open/Closed Principle*. 
 
+## Running Tests
+This project uses **JUnit 5** for unit testing.
+
+### Maven
+Run all JUnit tests under `src/text/java`:
+```
+mvn test
+```
+Run a specific test class:
+```
+mvn -Dtest=GapBufferTest test
+```
+
+### Gradle
+Run all JUnit tests under `src/text/java`:
+```
+./gradlew test
+```
+Run a specific test class:
+```
+./gradlew test --tests "zhrfrd.jnotes.GapBufferTest"
+```
+
 ## TODO
 - [ ] Add text cursor with its behaviours.
   - [x] Move cursor left with keystrokes.
