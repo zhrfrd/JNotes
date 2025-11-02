@@ -40,16 +40,6 @@ public class GapBuffer {
     }
 
     /**
-     * Insert a whole string in the gap (cursor position) and reduce the gap size by the number of size of the string inserted.
-     * @param str String to be inserted.
-     */
-    protected void insert(String str) {
-        for (char c : str.toCharArray()) {
-            insert(c);
-        }
-    }
-
-    /**
      * Delete the character starting from the cursor position to the left.
      */
     public void delete() {

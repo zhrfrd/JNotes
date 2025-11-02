@@ -82,46 +82,29 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        char c = e.getKeyChar();
-
-        // Check if the character typed is a real character and not a control character such as tabs, backspaces etc.
-        if (Character.isDefined(c) && !Character.isISOControl(c)) {
-            commandManager.execute(new InsertCharCommand(gapBuffer, c));
-        } else if (c == KeyEvent.VK_ENTER) {   // New line
-            commandManager.execute(new InsertCharCommand(gapBuffer, '\n'));
-        } else if (c == KeyEvent.VK_BACK_SPACE) {   // Backspace
-            commandManager.execute(new DeleteCharCommand(gapBuffer));
-        }
-
-        repaint();
-    }
-
-    @Override
     public void keyPressed(KeyEvent e) {
         boolean isModifierDown = e.isControlDown() || e.isMetaDown();
         caretVisible = true;
 
-        // Handle Redo first so Cmd + Shift + Z does not get caught by Undo branch
         if (isModifierDown && (e.getKeyCode() == KeyEvent.VK_Y || (e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Z))) {
             commandManager.redo();
-            repaint();
-            e.consume();
-            return;
-        }
-        // Undo
-        if (isModifierDown && e.getKeyCode() == KeyEvent.VK_Z) {
+        } else if (isModifierDown && e.getKeyCode() == KeyEvent.VK_Z) {
             commandManager.undo();
-            repaint();
-            e.consume();
-            return;
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
+            gapBuffer.moveCursor(e.getKeyCode());
+        } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+            commandManager.execute(new DeleteCharCommand(gapBuffer));
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            commandManager.execute(new InsertCharCommand(gapBuffer, '\n'));
+        } else {
+            char c = e.getKeyChar();
+            if (Character.isDefined(c) && !Character.isISOControl(c)) {
+                commandManager.execute(new InsertCharCommand(gapBuffer, c));
+            }
         }
 
-        if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-            gapBuffer.moveCursor(e.getKeyCode());
-            repaint();
-            e.consume();
-        }
+        repaint();
+        e.consume();
     }
 
     @Override
@@ -136,6 +119,9 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
         caretVisible = false;
         repaint();
     }
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
 
     @Override
     public void keyReleased(KeyEvent e) {}
