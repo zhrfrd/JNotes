@@ -39,7 +39,7 @@ class GapBufferTest {
         int newBufferSize = gapBuffer.getBufferSize();
 
         assertEquals(initialBufferSize * 2, newBufferSize, "Buffer size should double when gap size reaches 0 and a character is inserted.");
-        assertEquals(gapBufferSizeBeforeResize, initialBufferSize, "Buffer should not have resized before gap size reached 0");
+        assertEquals(gapBufferSizeBeforeResize, initialBufferSize, "Buffer should not have resized before gap size reached 0.");
     }
 
     @Test
@@ -57,7 +57,7 @@ class GapBufferTest {
         gapBuffer.delete();
         int newGapSize = gapBuffer.getGapEnd() - gapBuffer.getGapStart();
 
-        assertEquals(initialGapSize + 2, newGapSize, "The gap size must increase by 1 at each deletion");
+        assertEquals(initialGapSize + 2, newGapSize, "The gap size must increase by 1 at each deletion.");
     }
 
     @Test
@@ -74,8 +74,8 @@ class GapBufferTest {
             gapBuffer.moveCursor(KeyEvent.VK_LEFT);
         }
 
-        assertEquals(0, gapBuffer.getGapStart(), "Cursor should be at position 0 (beginning)");
-        assertEquals('\0', gapBuffer.getCharBeforeCursor(), "getCharBeforeCursor should return null character ('\\0') when cursor is at the beginning");
+        assertEquals(0, gapBuffer.getGapStart(), "Cursor should be at position 0 (beginning).");
+        assertEquals('\0', gapBuffer.getCharBeforeCursor(), "getCharBeforeCursor should return null character ('\\0') when cursor is at the beginning.");
     }
 
     @Test
@@ -93,7 +93,220 @@ class GapBufferTest {
             gapBuffer.moveCursor(KeyEvent.VK_LEFT);
         }
 
-        assertEquals(3, gapBuffer.getGapStart(), "Cursor should be moved 4 positions to the left");
-        assertEquals('c', gapBuffer.getCharBeforeCursor(), "The character before the cursor should be 'c'");
+        assertEquals(3, gapBuffer.getGapStart(), "Cursor should be moved 4 positions to the left.");
+        assertEquals('c', gapBuffer.getCharBeforeCursor(), "The character before the cursor should be 'c'.");
+    }
+
+    @Test
+    void moveCursor_left_movesGapLeft() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('c');
+        
+        int initialPosition = gapBuffer.getGapStart();
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        
+        assertEquals(initialPosition - 1, gapBuffer.getGapStart(), "Gap should move left by 1 position.");
+        assertEquals('b', gapBuffer.getCharBeforeCursor(), "Character before cursor should be 'b'.");
+    }
+
+    @Test
+    void moveCursor_leftWhenAtBeginning_cursorStaysAtSamePosition() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        
+        int positionAtStart = gapBuffer.getGapStart();
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        
+        assertEquals(positionAtStart, gapBuffer.getGapStart(), "Cursor should not move to the left when at beginning.");
+        assertEquals('\0', gapBuffer.getCharBeforeCursor(), "Should return null character at beginning.");
+    }
+
+    @Test
+    void moveCursor_right_movesGapRight() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('c');
+        
+        // Move cursor left first to have some characters at its right.
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        
+        int positionBeforeMove = gapBuffer.getGapStart();
+        gapBuffer.moveCursor(KeyEvent.VK_RIGHT);
+        
+        assertEquals(positionBeforeMove + 1, gapBuffer.getGapStart(), "Cursor should move right by 1 position.");
+        assertEquals('b', gapBuffer.getCharBeforeCursor(), "Character before cursor should be 'b'.");
+    }
+
+    @Test
+    void moveCursor_rightWhenAtTheEnd_cursorStaysAtSamePosition() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('c');
+        
+        int initialGapStart = gapBuffer.getGapStart();
+        gapBuffer.moveCursor(KeyEvent.VK_RIGHT);
+        
+        assertEquals(initialGapStart, gapBuffer.getGapStart(), "Cursor should not move right when at the end of the text.");
+    }
+
+    @Test
+    void moveCursor_up_movesGapToPreviousLine() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('c');
+        gapBuffer.insert('\n');
+        gapBuffer.insert('d');
+        gapBuffer.insert('e');
+        gapBuffer.insert('f');
+        gapBuffer.moveCursor(KeyEvent.VK_UP);
+
+        assertEquals(gapBuffer.getCharBeforeCursor(), 'c', "The cursor should have moved up, after the letter 'c'.");
+    }
+
+    @Test
+    void moveCursor_up_atFirstLine_doesNotMove() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('c');
+        
+        int positionAtFirstLine = gapBuffer.getGapStart();
+        gapBuffer.moveCursor(KeyEvent.VK_UP);
+        
+        assertEquals(positionAtFirstLine, gapBuffer.getGapStart(), "Cursor should not move up when at the first line.");
+    }
+
+    @Test
+    void moveCursor_upWhenPreviousLineIsLonger_movesToSameColumn() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('c');
+        gapBuffer.insert('d');
+        gapBuffer.insert('e');
+        gapBuffer.insert('\n');
+        gapBuffer.insert('f');
+        gapBuffer.insert('g');
+        gapBuffer.moveCursor(KeyEvent.VK_UP);
+
+        assertEquals(gapBuffer.getCharBeforeCursor(), 'b', "The cursor should have moved up after the letter 'b'.");
+    }
+
+    @Test
+    void moveCursor_upWhenPreviousLineIsShorter_movesToEndOfPreviousLine() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('\n');
+        gapBuffer.insert('c');
+        gapBuffer.insert('d');
+        gapBuffer.insert('e');
+        gapBuffer.insert('f');
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_UP);
+
+        assertEquals(gapBuffer.getCharBeforeCursor(), 'b', "The cursor should have move up at the end of the line after letter 'c'.");
+    }
+
+    @Test
+    void moveCursor_down_movesToNextLine() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('c');
+        gapBuffer.insert('\n');  // New line
+        gapBuffer.insert('d');
+        gapBuffer.insert('e');
+        gapBuffer.insert('f');
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        
+        int positionBeforeDown = gapBuffer.getGapStart();
+        gapBuffer.moveCursor(KeyEvent.VK_DOWN);
+        
+        assertEquals(gapBuffer.getCharBeforeCursor(), 'f', "The cursor should have move to the next line after letter 'f'.");
+    }
+
+    @Test
+    void moveCursor_down_atLastLine_doesNotMove() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('c');
+        gapBuffer.insert('\n');
+        gapBuffer.insert('d');
+        gapBuffer.insert('e');
+        
+        int positionAtLastLine = gapBuffer.getGapStart();
+        gapBuffer.moveCursor(KeyEvent.VK_DOWN);
+        
+        assertEquals(positionAtLastLine, gapBuffer.getGapStart(), "Cursor should not move down when at last line.");
+    }
+
+    @Test
+    void moveCursor_downWhenNextLineIsLonger_movesToSameColumn() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('\n');
+        gapBuffer.insert('c');
+        gapBuffer.insert('d');
+        gapBuffer.insert('e');
+        gapBuffer.insert('f');
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_DOWN);
+
+        assertEquals(gapBuffer.getCharBeforeCursor(), 'c', "The cursor should have moved down to the same column after letter 'a'.");
+    }
+
+    @Test
+    void moveCursor_downWhenNextLineIsShorter_movesToEndOfNextLine() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('c');
+        gapBuffer.insert('d');
+        gapBuffer.insert('e');
+        gapBuffer.insert('\n');
+        gapBuffer.insert('f');
+        gapBuffer.insert('g');
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_DOWN);
+
+        assertEquals(gapBuffer.getCharBeforeCursor(), 'g', "The cursor should have moved up to the same column after letter 'g'.");
+    }
+
+    @Test
+    void moveCursor_leftAndRight_preservesText() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('c');
+        
+        String originalText = gapBuffer.getText();
+        gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        gapBuffer.moveCursor(KeyEvent.VK_RIGHT);
+        
+        assertEquals(originalText, gapBuffer.getText(), "Text should remain unchanged after moving cursor.");
     }
 }
