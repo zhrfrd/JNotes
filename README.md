@@ -52,9 +52,6 @@ Run a specific test class:
     - [x] Reset gap position.
   - [ ] Move cursor with the mouse.
     - [ ] Reset gap position.
-- [ ] Add support for deleting characters:
-  - [x] Delete characters before the cursor.
-  - [ ] Delete characters after the cursor.
 - [ ] Copy and paste characters.
 - [ ] Highlight text.
 - [ ] Save file.
@@ -64,6 +61,9 @@ Run a specific test class:
 - [x] Change font from "proportional font" to "monospace font";
 - [x] Implement Undo.
 - [x] Implement Redo.
+- [x] Add support for deleting characters:
+  - [x] Delete characters before the cursor.
+  - [x] Delete characters after the cursor.
 
 ## Improvements
 - [ ] Improve the loop that iterates through each line in `paintComponent()`. At the moment the loop runs at each timer tick and this increases with the number of new lines.
