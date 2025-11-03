@@ -1,6 +1,7 @@
 package zhrfrd.jnotes.buffer;
 
 import org.junit.jupiter.api.Test;
+import zhrfrd.jnotes.util.Direction;
 
 import java.awt.event.KeyEvent;
 import java.util.Random;
@@ -43,7 +44,7 @@ class GapBufferTest {
     }
 
     @Test
-    void delete_charInsideBuffer_increaseGapSize() {
+    void delete_charInsideBufferToTheLeft_increaseGapSize() {
         GapBuffer gapBuffer = new GapBuffer(100);
         Random random = new Random();
 
@@ -53,8 +54,26 @@ class GapBufferTest {
         }
 
         int initialGapSize = gapBuffer.getGapEnd() - gapBuffer.getGapStart();
-        gapBuffer.deletePreviousChar();
-        gapBuffer.deletePreviousChar();
+        gapBuffer.deleteChar(Direction.LEFT);
+        gapBuffer.deleteChar(Direction.LEFT);
+        int newGapSize = gapBuffer.getGapEnd() - gapBuffer.getGapStart();
+
+        assertEquals(initialGapSize + 2, newGapSize, "The gap size must increase by 1 at each deletion.");
+    }
+
+    @Test
+    void delete_charInsideBufferToTheRight_increaseGapSize() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        Random random = new Random();
+
+        for (int i = 0; i < 30; i ++) {
+            char c = (char)('a' + random.nextInt(26));
+            gapBuffer.insert(c);
+        }
+
+        int initialGapSize = gapBuffer.getGapEnd() - gapBuffer.getGapStart();
+        gapBuffer.deleteChar(Direction.RIGHT);
+        gapBuffer.deleteChar(Direction.RIGHT);
         int newGapSize = gapBuffer.getGapEnd() - gapBuffer.getGapStart();
 
         assertEquals(initialGapSize + 2, newGapSize, "The gap size must increase by 1 at each deletion.");

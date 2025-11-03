@@ -40,10 +40,15 @@ public class GapBuffer {
         gapStart ++;
     }
 
+    /**
+     * Delete a character to the left or right of the cursor based on the direction provided.
+     * @param direction The direction where to delete the character:
+     *                  {@code VK_LEFT}, {@code VK_RIGHT}
+     */
     public void deleteChar(Direction direction) {
-        if (direction == Direction.LEFT && gapStart > 0) {
+        if (direction == Direction.LEFT) {
             gapStart --;
-        } else if (direction == Direction.RIGHT && gapEnd < getBufferSize()) {
+        } else if (direction == Direction.RIGHT) {
             gapEnd ++;
         }
 
