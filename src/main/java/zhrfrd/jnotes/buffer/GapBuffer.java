@@ -1,6 +1,7 @@
 package zhrfrd.jnotes.buffer;
 
 import java.awt.event.KeyEvent;
+import zhrfrd.jnotes.util.Direction;
 
 public class GapBuffer {
     private final int DEFAULT_BUFFER_SIZE = 20;   // TODO: Change back to 1024. 20 is just for quickly test.
@@ -39,13 +40,13 @@ public class GapBuffer {
         gapStart ++;
     }
 
-    /**
-     * Delete the character starting from the cursor position to the left.
-     */
-    public void delete() {
-        if (gapStart > 0) {
+    public void deleteChar(Direction direction) {
+        if (direction == Direction.LEFT && gapStart > 0) {
             gapStart --;
+        } else if (direction == Direction.RIGHT && gapEnd < getBufferSize()) {
+            gapEnd ++;
         }
+
         resizeGapBuffer(buffer.length);
     }
 
@@ -59,6 +60,18 @@ public class GapBuffer {
         }
 
         return buffer[gapStart - 1];
+    }
+
+    /**
+     * Get the character immediately after the cursor.
+     * @return The character immediately after the cursor (to the right), or '\0' (null) if it's at the end of the buffer.
+     */
+    public char getCharAfterCursor() {
+        if (gapEnd == buffer.length) {
+            return '\0';
+        }
+
+        return buffer[gapEnd];
     }
 
     /**

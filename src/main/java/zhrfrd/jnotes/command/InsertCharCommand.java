@@ -1,30 +1,27 @@
 package zhrfrd.jnotes.command;
 
+import zhrfrd.jnotes.util.Direction;
 import zhrfrd.jnotes.buffer.GapBuffer;
 
 public class InsertCharCommand implements Command {
-    private final GapBuffer gapBuffer;
-    private final char character;
+    private final GapBuffer GAP_BUFFER;
+    private final char CHARACTER;
 
     public InsertCharCommand(GapBuffer gapBuffer, char character) {
-        this.gapBuffer = gapBuffer;
-        this.character = character;
+        this.GAP_BUFFER = gapBuffer;
+        this.CHARACTER = character;
     }
 
     @Override
     public void execute() {
-        gapBuffer.insert(character);
+        GAP_BUFFER.insert(CHARACTER);
     }
 
     @Override
     public void undo() {
-        if (gapBuffer.getCharBeforeCursor() == '\0') {
+        if (GAP_BUFFER.getCharBeforeCursor() == '\0') {
             return;
         }
-        gapBuffer.delete();
+        GAP_BUFFER.deleteChar(Direction.LEFT);
     }
 }
-
-
-
-

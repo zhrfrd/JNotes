@@ -53,8 +53,8 @@ class GapBufferTest {
         }
 
         int initialGapSize = gapBuffer.getGapEnd() - gapBuffer.getGapStart();
-        gapBuffer.delete();
-        gapBuffer.delete();
+        gapBuffer.deletePreviousChar();
+        gapBuffer.deletePreviousChar();
         int newGapSize = gapBuffer.getGapEnd() - gapBuffer.getGapStart();
 
         assertEquals(initialGapSize + 2, newGapSize, "The gap size must increase by 1 at each deletion.");
@@ -98,6 +98,39 @@ class GapBufferTest {
     }
 
     @Test
+    void getCharAfterCursor_cursorAtTheEnd_returnsNullChar() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        Random random = new Random();
+
+        for (int i = 0; i < 30; i ++) {
+            char c = (char)('a' + random.nextInt(26));
+            gapBuffer.insert(c);
+        }
+
+        assertEquals(gapBuffer.getBufferSize(), gapBuffer.getGapEnd(), "Cursor should be at the end of the text.");
+        assertEquals('\0', gapBuffer.getCharAfterCursor(), "getCharAfterCursor should return null character ('\0') when cursor is at the end.");
+    }
+
+    @Test
+    void getCharAfterCursor_cursorWithinText_returnsCharAfterCursor() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('a');
+        gapBuffer.insert('b');
+        gapBuffer.insert('c');
+        gapBuffer.insert('d');
+        gapBuffer.insert('e');
+        gapBuffer.insert('f');
+        gapBuffer.insert('g');
+
+        for (int i = 0; i < 4; i ++) {
+            gapBuffer.moveCursor(KeyEvent.VK_LEFT);
+        }
+
+        assertEquals(3, gapBuffer.getGapStart(), "Cursor should be moved 4 positions to the left.");
+        assertEquals('d', gapBuffer.getCharAfterCursor(), "The character after the cursor should be 'd'.");
+    }
+
+    @Test
     void moveCursor_left_movesGapLeft() {
         GapBuffer gapBuffer = new GapBuffer(100);
         gapBuffer.insert('a');
@@ -108,7 +141,7 @@ class GapBufferTest {
         gapBuffer.moveCursor(KeyEvent.VK_LEFT);
         
         assertEquals(initialPosition - 1, gapBuffer.getGapStart(), "Gap should move left by 1 position.");
-        assertEquals('b', gapBuffer.getCharBeforeCursor(), "Character before cursor should be 'b'.");
+        assertEquals('b', gapBuffer.getCharBeforeCursor(), "Character after cursor should be 'b'.");
     }
 
     @Test
