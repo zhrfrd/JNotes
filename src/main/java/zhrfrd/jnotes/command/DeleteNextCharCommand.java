@@ -8,7 +8,7 @@ public class DeleteNextCharCommand implements Command {
     private Character deletedCharacter;
 
     public DeleteNextCharCommand(GapBuffer gapBuffer) {
-        this.GAP_BUFFER = gapBuffer;
+        GAP_BUFFER = gapBuffer;
     }
 
     @Override

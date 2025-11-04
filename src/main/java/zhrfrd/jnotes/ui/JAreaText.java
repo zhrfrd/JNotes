@@ -1,11 +1,7 @@
 package zhrfrd.jnotes.ui;
 
-import zhrfrd.jnotes.command.CommandManager;
-import zhrfrd.jnotes.command.DeleteNextCharCommand;
-import zhrfrd.jnotes.command.DeletePreviousCharCommand;
+import zhrfrd.jnotes.command.*;
 import zhrfrd.jnotes.buffer.GapBuffer;
-import zhrfrd.jnotes.command.InsertCharCommand;
-import zhrfrd.jnotes.command.MoveCursorCommand;
 
 import javax.swing.*;
 import java.awt.*;
@@ -92,6 +88,8 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
             commandManager.redo();
         } else if (isModifierDown && e.getKeyCode() == KeyEvent.VK_Z) {
             commandManager.undo();
+        } else if (e.isShiftDown() && (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT)) {
+            commandManager.execute((new HighlightCommand(gapBuffer, e.getKeyCode())));
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
             commandManager.execute(new MoveCursorCommand(gapBuffer, e.getKeyCode()));
         } else if (e.getKeyCode() == KeyEvent.VK_DELETE || (isModifierDown && e.getKeyCode() == KeyEvent.VK_BACK_SPACE)) {

@@ -8,8 +8,8 @@ public class InsertCharCommand implements Command {
     private final char CHARACTER;
 
     public InsertCharCommand(GapBuffer gapBuffer, char character) {
-        this.GAP_BUFFER = gapBuffer;
-        this.CHARACTER = character;
+        GAP_BUFFER = gapBuffer;
+        CHARACTER = character;
     }
 
     @Override

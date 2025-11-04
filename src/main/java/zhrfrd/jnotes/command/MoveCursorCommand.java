@@ -1,14 +1,15 @@
 package zhrfrd.jnotes.command;
 
 import zhrfrd.jnotes.buffer.GapBuffer;
+import zhrfrd.jnotes.util.Direction;
 
 public class MoveCursorCommand implements Command {
     private final GapBuffer GAP_BUFFER;
-    private final int DIRECTION;
+    private final Direction DIRECTION;
 
-    public MoveCursorCommand(GapBuffer gapBuffer, int direction) {
-        this.GAP_BUFFER = gapBuffer;
-        this.DIRECTION = direction;
+    public MoveCursorCommand(GapBuffer gapBuffer, int keyCode) {
+        GAP_BUFFER = gapBuffer;
+        DIRECTION = Direction.fromKeyCode(keyCode);
     }
 
     @Override
