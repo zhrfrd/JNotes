@@ -5,6 +5,7 @@ import zhrfrd.jnotes.command.DeleteNextCharCommand;
 import zhrfrd.jnotes.command.DeletePreviousCharCommand;
 import zhrfrd.jnotes.buffer.GapBuffer;
 import zhrfrd.jnotes.command.InsertCharCommand;
+import zhrfrd.jnotes.command.MoveCursorCommand;
 
 import javax.swing.*;
 import java.awt.*;
@@ -92,7 +93,7 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
         } else if (isModifierDown && e.getKeyCode() == KeyEvent.VK_Z) {
             commandManager.undo();
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
-            gapBuffer.moveCursor(e.getKeyCode());
+            commandManager.execute(new MoveCursorCommand(gapBuffer, e.getKeyCode()));
         } else if (e.getKeyCode() == KeyEvent.VK_DELETE || (isModifierDown && e.getKeyCode() == KeyEvent.VK_BACK_SPACE)) {
             commandManager.execute(new DeleteNextCharCommand(gapBuffer));
         } else if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {

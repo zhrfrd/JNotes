@@ -52,8 +52,8 @@ Run a specific test class:
     - [x] Reset gap position.
   - [ ] Move cursor with the mouse.
     - [ ] Reset gap position.
-- [ ] Copy and paste characters.
 - [ ] Highlight text.
+- [ ] Copy and paste characters.
 - [ ] Save file.
 - [ ] Open file.
 - [x] Start a new line when pressing Enter.
