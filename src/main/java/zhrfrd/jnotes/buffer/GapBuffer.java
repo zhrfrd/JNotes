@@ -2,14 +2,19 @@ package zhrfrd.jnotes.buffer;
 
 import zhrfrd.jnotes.util.Direction;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 public class GapBuffer {
     private final int DEFAULT_BUFFER_SIZE = 20;   // TODO: Change back to 1024. 20 is just for quickly test.
     /** Array that holds the text (and the gap). */
     private char[] buffer;
     /** The index of the beginning of the gap. It always matches the position of the cursor. */
     private int gapStart;
-    /** The index of the end of the gap */
+    /** The index of the end of the gap. */
     private int gapEnd;
+    /** Stack to store the characters highlighted. */
+    private Deque<Character> stackHighlighted = new ArrayDeque<>();
 
     public GapBuffer() {
         buffer = new char[DEFAULT_BUFFER_SIZE];
@@ -52,6 +57,23 @@ public class GapBuffer {
         }
 
         resizeGapBuffer(buffer.length);
+    }
+
+    public void highlightChar(Direction direction) {
+        switch (direction) {
+            case LEFT:
+                stackHighlighted.add(getCharBeforeCursor());
+                moveCursor(Direction.LEFT);
+                break;
+            case RIGHT:
+                stackHighlighted.add(getCharAfterCursor());
+                moveCursor(Direction.RIGHT);
+                break;
+            case UP:
+                break;
+            case DOWN:
+                break;
+        }
     }
 
     /**

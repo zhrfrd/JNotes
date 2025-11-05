@@ -88,7 +88,7 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
             commandManager.redo();
         } else if (isModifierDown && e.getKeyCode() == KeyEvent.VK_Z) {
             commandManager.undo();
-        } else if (e.isShiftDown() && (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT)) {
+        } else if (e.isShiftDown() && (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN)) {
             commandManager.execute((new HighlightCommand(gapBuffer, e.getKeyCode())));
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
             commandManager.execute(new MoveCursorCommand(gapBuffer, e.getKeyCode()));

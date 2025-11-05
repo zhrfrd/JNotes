@@ -14,16 +14,7 @@ public class HighlightCommand implements Command {
 
     @Override
     public void execute() {
-        switch (DIRECTION) {
-            case LEFT:
-                break;
-            case RIGHT:
-                break;
-            case UP:
-                break;
-            case DOWN:
-                break;
-        }
+        GAP_BUFFER.highlightChar(DIRECTION);
     }
 
     @Override
