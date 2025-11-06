@@ -61,21 +61,17 @@ the [Command design pattern](https://refactoring.guru/design-patterns/command) w
 and *Open/Closed Principle*. 
 
 ## TODO
-- [ ] Add text cursor with its behaviours.
-  - [x] Move cursor left with keystrokes.
-    - [x] Reset gap position.
-  - [x] Move cursor right with keystrokes.
-    - [x] Reset gap position.
-  - [x] Move cursor up following the correct "columns" on the y-axis with keystrokes.
-    - [x] Reset gap position.
-  - [x] Move cursor down following the correct "columns" on the y-axis with keystrokes.
-    - [x] Reset gap position.
-  - [ ] Move cursor with the mouse.
-    - [ ] Reset gap position.
 - [ ] Highlight text.
+  - [x] Highlight to the left.
+  - [x] Highlight to the right.
+  - [ ] Highlight up.
+  - [ ] Highlight down. 
+  - [ ] Show highlight in the text.
 - [ ] Copy and paste characters.
 - [ ] Save file.
 - [ ] Open file.
+- [ ] Move cursor with the mouse.
+  - [ ] Reset gap position.
 - [x] Start a new line when pressing Enter.
 - [x] Implement a custom "text area" without relying on `JTextArea` from the Swing library or similar components.
 - [x] Change font from "proportional font" to "monospace font";
@@ -84,6 +80,15 @@ and *Open/Closed Principle*.
 - [x] Add support for deleting characters:
   - [x] Delete characters before the cursor.
   - [x] Delete characters after the cursor.
+- [x] Add text cursor with its behaviours.
+  - [x] Move cursor left with keystrokes.
+      - [x] Reset gap position.
+  - [x] Move cursor right with keystrokes.
+      - [x] Reset gap position.
+  - [x] Move cursor up following the correct "columns" on the y-axis with keystrokes.
+      - [x] Reset gap position.
+  - [x] Move cursor down following the correct "columns" on the y-axis with keystrokes.
+      - [x] Reset gap position.
 
 ## Improvements
 - [ ] Improve the loop that iterates through each line in `paintComponent()`. At the moment the loop runs at each timer tick and this increases with the number of new lines.

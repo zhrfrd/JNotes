@@ -13,8 +13,10 @@ public class GapBuffer {
     private int gapStart;
     /** The index of the end of the gap. */
     private int gapEnd;
-    /** Stack to store the characters highlighted. */
-    private Deque<Character> stackHighlighted = new ArrayDeque<>();
+    /** Stack to store the characters highlighted to the left. */
+    private Deque<Character> stackHighlightedLeft = new ArrayDeque<>();
+    /** Stack to store the characters highlighted to the right. */
+    private Deque<Character> stackHighlightedRight = new ArrayDeque<>();
 
     public GapBuffer() {
         buffer = new char[DEFAULT_BUFFER_SIZE];
@@ -62,11 +64,19 @@ public class GapBuffer {
     public void highlightChar(Direction direction) {
         switch (direction) {
             case LEFT:
-                stackHighlighted.add(getCharBeforeCursor());
+                if (!stackHighlightedRight.isEmpty()) {
+                    stackHighlightedLeft.push(stackHighlightedRight.pop());
+                } else if (getCharBeforeCursor() != '\0'){
+                    stackHighlightedLeft.push(getCharBeforeCursor());
+                }
                 moveCursor(Direction.LEFT);
                 break;
             case RIGHT:
-                stackHighlighted.add(getCharAfterCursor());
+                if (!stackHighlightedLeft.isEmpty()) {
+                    stackHighlightedRight.push(stackHighlightedLeft.pop());
+                } else if (getCharAfterCursor() != '\0'){
+                    stackHighlightedRight.push(getCharAfterCursor());
+                }
                 moveCursor(Direction.RIGHT);
                 break;
             case UP:
@@ -74,6 +84,11 @@ public class GapBuffer {
             case DOWN:
                 break;
         }
+
+        for (Character c : stackHighlightedLeft) {
+            System.out.print(c);
+        }
+        System.out.println();
     }
 
     /**
