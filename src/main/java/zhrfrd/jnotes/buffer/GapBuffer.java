@@ -2,9 +2,6 @@ package zhrfrd.jnotes.buffer;
 
 import zhrfrd.jnotes.util.Direction;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 public class GapBuffer {
     private final int DEFAULT_BUFFER_SIZE = 20;   // TODO: Change back to 1024. 20 is just for quickly test.
     /** Array that holds the text (and the gap). */
@@ -13,10 +10,10 @@ public class GapBuffer {
     private int gapStart;
     /** The index of the end of the gap. */
     private int gapEnd;
-    /** Stack to store the characters highlighted to the left. */
-    private Deque<Character> stackHighlightedLeft = new ArrayDeque<>();
-    /** Stack to store the characters highlighted to the right. */
-    private Deque<Character> stackHighlightedRight = new ArrayDeque<>();
+    /** The text position where the selection starts (inclusive). -1 means no selection. */
+    private int highlightStart = -1;
+    /** The text position where the selection ends (exclusive). -1 means no selection. */
+    private int highlightEnd = -1;
 
     public GapBuffer() {
         buffer = new char[DEFAULT_BUFFER_SIZE];
@@ -36,6 +33,7 @@ public class GapBuffer {
      * @param c The character to be inserted.
      */
     public void insert(char c) {
+        clearHighlight();
         int gapSize = gapEnd - gapStart;
 
         if (gapSize <= 0) {
@@ -52,6 +50,8 @@ public class GapBuffer {
      *                  {@code VK_LEFT}, {@code VK_RIGHT}
      */
     public void deleteChar(Direction direction) {
+        clearHighlight();
+
         if (direction == Direction.LEFT) {
             gapStart --;
         } else if (direction == Direction.RIGHT) {
@@ -61,34 +61,23 @@ public class GapBuffer {
         resizeGapBuffer(buffer.length);
     }
 
+    /**
+     * Highlight text by extending the selection in the given direction.
+     * If no selection exists, starts a new selection from the current cursor position.
+     * @param direction The direction to extend the selection: {@code LEFT}, {@code RIGHT}, {@code UP}, {@code DOWN}.
+     */
     public void highlightChar(Direction direction) {
-        switch (direction) {
-            case LEFT:
-                if (!stackHighlightedRight.isEmpty()) {
-                    stackHighlightedLeft.push(stackHighlightedRight.pop());
-                } else if (getCharBeforeCursor() != '\0'){
-                    stackHighlightedLeft.push(getCharBeforeCursor());
-                }
-                moveCursor(Direction.LEFT);
-                break;
-            case RIGHT:
-                if (!stackHighlightedLeft.isEmpty()) {
-                    stackHighlightedRight.push(stackHighlightedLeft.pop());
-                } else if (getCharAfterCursor() != '\0'){
-                    stackHighlightedRight.push(getCharAfterCursor());
-                }
-                moveCursor(Direction.RIGHT);
-                break;
-            case UP:
-                break;
-            case DOWN:
-                break;
+        if (highlightStart == -1) {
+            highlightStart = gapStart;   // gapStart is not yet updated by the cursor movement. This will happen when moveCursorPreserveSelection() is called.
         }
+        
+        moveCursorAndPreserveHighlight(direction);
+        highlightEnd = gapStart;   // Update selection end to the new cursor position.
 
-        for (Character c : stackHighlightedLeft) {
-            System.out.print(c);
+        // TODO: Maybe remove
+        if (highlightStart == highlightEnd) {
+            clearHighlight();
         }
-        System.out.println();
     }
 
     /**
@@ -117,9 +106,20 @@ public class GapBuffer {
 
     /**
      * Change the cursor position by using the arrow keys. This method also updates the gap position in the buffer.
+     * <p><b>Note:</b> This method clears any existing selection. Use highlightChar() to move cursor while maintaining selection.</p>
      * @param direction The direction to move the cursor: {@code LEFT}, {@code RIGHT}, {@code UP}, {@code DOWN}.
      */
     public void moveCursor(Direction direction) {
+        clearHighlight();
+        moveCursorAndPreserveHighlight(direction);
+    }
+
+    /**
+     * Internal method to move the cursor without clearing the selection.
+     * This is used by highlightChar() to move the cursor while maintaining selection state.
+     * @param direction The direction to move the cursor: {@code LEFT}, {@code RIGHT}, {@code UP}, {@code DOWN}.
+     */
+    private void moveCursorAndPreserveHighlight(Direction direction) {
         switch (direction) {
             case LEFT:
                 if (gapStart > 0) {
@@ -212,7 +212,7 @@ public class GapBuffer {
                 newBuffer[gapEnd + i] = buffer[gapEnd + i];
             }
         } else if (direction == Direction.UP) {
-            StringBuilder sb = new StringBuilder();   // TODO: Remove gapSize in the parameter
+            StringBuilder sb = new StringBuilder();
 
             // Create a StringBuilder from the buffer without the empty spaces of the gap.
             for (char c : buffer) {
@@ -313,5 +313,34 @@ public class GapBuffer {
 
     public int getBufferSize() {
         return buffer.length;
+    }
+
+    public void clearHighlight() {
+        highlightStart = -1;
+        highlightEnd = -1;
+    }
+
+    /**
+     * Get the start position of the current selection in the text.
+     * @return The start position of the highlight, or -1 if no selection exists.
+     */
+    public int getHighlightStart() {
+        return highlightStart;
+    }
+
+    /**
+     * Get the end position of the current selection in the text.
+     * @return The end position of the highlight, or -1 if no selection exists.
+     */
+    public int getHighlightEnd() {
+        return highlightEnd;
+    }
+
+    /**
+     * Check if there is an active text selection.
+     * @return true if there is a selection, false otherwise.
+     */
+    public boolean hasHighlight() {
+        return highlightStart != -1;
     }
 }

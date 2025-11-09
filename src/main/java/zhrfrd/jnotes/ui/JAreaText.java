@@ -14,6 +14,8 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
     private static final int START_X = 10;
     /** Vertically offsets the caret slightly so it appears centered with the text. */
     private static final int CARET_Y_OFFSET = 5;
+    private static final Color HIGHLIGHT_COLOR = new Color(50, 100, 200);
+    private static final Color TEXT_COLOR = Color.WHITE;
     private final GapBuffer gapBuffer;
     private final CommandManager commandManager;
     private boolean caretVisible;
@@ -40,15 +42,76 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
     }
 
     private void drawText(Graphics g, int lineHeight) {
-        g.setColor(Color.WHITE);
         String text = gapBuffer.getText();
+        FontMetrics fontMetrics = g.getFontMetrics();
         
         // Split text into lines and draw each line separately.
         String[] lines = text.split("\n", -1);   // -1 keeps empty strings at the end.
-        
-        for (int i = 0; i < lines.length; i++) {
-            int y = (i + 1) * lineHeight;
-            g.drawString(lines[i], START_X, y);
+
+        // Draw highlight background if there's a selection
+        if (gapBuffer.hasHighlight()) {
+            drawHighlight(g, fontMetrics, lineHeight, text, lines);
+        }
+
+        // Draw the text with appropriate colors for selected/non-selected portions
+        drawTextWithHighlight(g, lineHeight, lines);
+    }
+
+    /**
+     * Renders the background highlight for the currently selected text region.
+     * <p><b>Note: </b>It does not render any visible text itself. text rendering is handled separately by {@link #drawTextWithHighlight(Graphics, int, String[])}.</p>
+     * @param g The {@link Graphics} context used to perform drawing.
+     * @param fontMetrics The {@link FontMetrics} object used to measure text width.
+     * @param lineHeight The height, in pixels, of a single line of text.
+     * @param text The full text content currently stored in the editor buffer.
+     * @param lines The text split and organized by lines.
+     */
+    private void drawHighlight(Graphics g, FontMetrics fontMetrics, int lineHeight, String text, String[] lines) {
+        int highlightStart = Math.min(gapBuffer.getHighlightStart(), gapBuffer.getHighlightEnd());
+        int highlightEnd = Math.max(gapBuffer.getHighlightStart(), gapBuffer.getHighlightEnd());
+
+        if (highlightStart == highlightEnd) {
+            return; // No visible highlight.
+        }
+
+        int charIndex = 0;
+        for (int lineIndex = 0; lineIndex < lines.length; lineIndex ++) {
+            String line = lines[lineIndex];
+            int lineStart = charIndex;
+            int lineEnd = charIndex + line.length();
+
+            // Check if this line overlaps with the highlight.
+            if (highlightEnd > lineStart && highlightStart < lineEnd) {
+                int lineHighlightStart = Math.max(0, highlightStart - lineStart);
+                int lineHighlightEnd = Math.min(line.length(), highlightEnd - lineStart);
+
+                // Find pixel positions.
+                int xStart = START_X + fontMetrics.stringWidth(line.substring(0, lineHighlightStart));
+                int width = fontMetrics.stringWidth(line.substring(lineHighlightStart, lineHighlightEnd));
+                int y = lineIndex * lineHeight;
+
+                g.setColor(HIGHLIGHT_COLOR);
+                g.fillRect(xStart, y, width, lineHeight);
+            }
+
+            charIndex += line.length() + 1; //   +1 for newline
+        }
+    }
+
+    /**
+     * Draws all visible text lines within the editor, including any highlighted text, on top of the
+     * previously rendered highlight background.
+     * @param g The {@link Graphics} context used to perform drawing.
+     * @param lineHeight The height, in pixels, of a single line of text.
+     * @param lines The text split and organized by lines.
+     */
+    private void drawTextWithHighlight(Graphics g, int lineHeight, String[] lines) {
+        g.setColor(TEXT_COLOR);
+
+        for (int lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+            String line = lines[lineIndex];
+            int y = (lineIndex + 1) * lineHeight;
+            g.drawString(line, START_X, y);
         }
     }
 

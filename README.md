@@ -62,8 +62,8 @@ and *Open/Closed Principle*.
 
 ## TODO
 - [ ] Highlight text.
-  - [x] Highlight to the left.
-  - [x] Highlight to the right.
+  - [ ] Highlight to the left.
+  - [ ] Highlight to the right.
   - [ ] Highlight up.
   - [ ] Highlight down. 
   - [ ] Show highlight in the text.
