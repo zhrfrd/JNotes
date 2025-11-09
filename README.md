@@ -61,12 +61,6 @@ the [Command design pattern](https://refactoring.guru/design-patterns/command) w
 and *Open/Closed Principle*. 
 
 ## TODO
-- [ ] Highlight text.
-  - [ ] Highlight to the left.
-  - [ ] Highlight to the right.
-  - [ ] Highlight up.
-  - [ ] Highlight down. 
-  - [ ] Show highlight in the text.
 - [ ] Copy and paste characters.
 - [ ] Save file.
 - [ ] Open file.
@@ -89,6 +83,12 @@ and *Open/Closed Principle*.
       - [x] Reset gap position.
   - [x] Move cursor down following the correct "columns" on the y-axis with keystrokes.
       - [x] Reset gap position.
+- [x] Highlight text.
+    - [x] Highlight to the left.
+    - [x] Highlight to the right.
+    - [x] Highlight up.
+    - [x] Highlight down.
+    - [x] Show highlight in the text.
 
 ## Improvements
 - [ ] Improve the loop that iterates through each line in `paintComponent()`. At the moment the loop runs at each timer tick and this increases with the number of new lines.
