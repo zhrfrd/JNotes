@@ -81,30 +81,6 @@ public class GapBuffer {
     }
 
     /**
-     * Get the character immediately before the cursor.
-     * @return The character immediately before the cursor (to the left), or '\0' (null) if it's at the start of the buffer.
-     */
-    public char getCharBeforeCursor() {
-        if (gapStart == 0) {
-            return '\0';
-        }
-
-        return buffer[gapStart - 1];
-    }
-
-    /**
-     * Get the character immediately after the cursor.
-     * @return The character immediately after the cursor (to the right), or '\0' (null) if it's at the end of the buffer.
-     */
-    public char getCharAfterCursor() {
-        if (gapEnd == buffer.length) {
-            return '\0';
-        }
-
-        return buffer[gapEnd];
-    }
-
-    /**
      * Change the cursor position by using the arrow keys. This method also updates the gap position in the buffer.
      * <p><b>Note:</b> This method clears any existing selection. Use highlightChar() to move cursor while maintaining selection.</p>
      * @param direction The direction to move the cursor: {@code LEFT}, {@code RIGHT}, {@code UP}, {@code DOWN}.
@@ -274,6 +250,19 @@ public class GapBuffer {
         gapEnd = newGapEnd;
     }
 
+    public void clearHighlight() {
+        highlightStart = -1;
+        highlightEnd = -1;
+    }
+
+    /**
+     * Check if there is an active text selection.
+     * @return true if there is a selection, false otherwise.
+     */
+    public boolean hasHighlight() {
+        return highlightStart != -1;
+    }
+
     public String getText() {
         StringBuilder sb = new StringBuilder();
 
@@ -315,9 +304,28 @@ public class GapBuffer {
         return buffer.length;
     }
 
-    public void clearHighlight() {
-        highlightStart = -1;
-        highlightEnd = -1;
+    /**
+     * Get the character immediately before the cursor.
+     * @return The character immediately before the cursor (to the left), or '\0' (null) if it's at the start of the buffer.
+     */
+    public char getCharBeforeCursor() {
+        if (gapStart == 0) {
+            return '\0';
+        }
+
+        return buffer[gapStart - 1];
+    }
+
+    /**
+     * Get the character immediately after the cursor.
+     * @return The character immediately after the cursor (to the right), or '\0' (null) if it's at the end of the buffer.
+     */
+    public char getCharAfterCursor() {
+        if (gapEnd == buffer.length) {
+            return '\0';
+        }
+
+        return buffer[gapEnd];
     }
 
     /**
@@ -334,13 +342,5 @@ public class GapBuffer {
      */
     public int getHighlightEnd() {
         return highlightEnd;
-    }
-
-    /**
-     * Check if there is an active text selection.
-     * @return true if there is a selection, false otherwise.
-     */
-    public boolean hasHighlight() {
-        return highlightStart != -1;
     }
 }

@@ -8,7 +8,7 @@ interesting key concepts.
 
 - Java JDK 22 or higher.
 - Maven 3.6.0 or higher (for building and running tests).
-- JUnit 5 5.10.0 (for unit testing - test scope only).
+- JUnit 5 5.10.0 (for unit testing).
 
 ## Clone the repository
 
@@ -91,6 +91,7 @@ and *Open/Closed Principle*.
     - [x] Show highlight in the text.
 
 ## Improvements
+- [ ] Adjust text highlight height.
 - [ ] Improve the loop that iterates through each line in `paintComponent()`. At the moment the loop runs at each timer tick and this increases with the number of new lines.
     Moreover, it runs each time you type on the editor decreasing obviously it's performance.
 - [ ] There is a glitch happening when maximizing and minimizing the editor.
