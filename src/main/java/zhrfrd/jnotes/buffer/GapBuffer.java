@@ -343,4 +343,16 @@ public class GapBuffer {
     public int getHighlightEnd() {
         return highlightEnd;
     }
+
+    public String getHighlightedText() {
+        if (getHighlightStart() == getHighlightEnd()) {
+            return "";
+        }
+
+        String text = getText();
+        int highlightStart = getHighlightStart();
+        int highlightEnd = getHighlightEnd();
+
+        return highlightStart < highlightEnd ? text.substring(highlightStart, highlightEnd) : text.substring(highlightEnd, highlightStart);
+    }
 }

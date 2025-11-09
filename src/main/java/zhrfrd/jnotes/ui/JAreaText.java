@@ -47,7 +47,7 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
         
         // Split text into lines and draw each line separately.
         String[] lines = text.split("\n", -1);   // -1 keeps empty strings at the end.
-
+        
         // Draw highlight background if there's a selection
         if (gapBuffer.hasHighlight()) {
             drawHighlight(g, fontMetrics, lineHeight, text, lines);
@@ -151,8 +151,12 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
             commandManager.redo();
         } else if (isModifierDown && e.getKeyCode() == KeyEvent.VK_Z) {
             commandManager.undo();
+        } else if (isModifierDown && e.getKeyCode() == KeyEvent.VK_C) {
+            commandManager.execute(new CopyCommand(gapBuffer));
+        } else if (isModifierDown && e.getKeyCode() == KeyEvent.VK_V) {
+            commandManager.execute(new PasteCommand(gapBuffer));
         } else if (e.isShiftDown() && (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN)) {
-            commandManager.execute((new HighlightCommand(gapBuffer, e.getKeyCode())));
+            commandManager.execute(new HighlightCommand(gapBuffer, e.getKeyCode()));
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) {
             commandManager.execute(new MoveCursorCommand(gapBuffer, e.getKeyCode()));
         } else if (e.getKeyCode() == KeyEvent.VK_DELETE || (isModifierDown && e.getKeyCode() == KeyEvent.VK_BACK_SPACE)) {

@@ -4,24 +4,24 @@ import zhrfrd.jnotes.util.Direction;
 import zhrfrd.jnotes.buffer.GapBuffer;
 
 public class InsertCharCommand implements Command {
-    private final GapBuffer GAP_BUFFER;
-    private final char CHARACTER;
+    private final GapBuffer gapBuffer;
+    private final char character;
 
     public InsertCharCommand(GapBuffer gapBuffer, char character) {
-        GAP_BUFFER = gapBuffer;
-        CHARACTER = character;
+        this.gapBuffer = gapBuffer;
+        this.character = character;
     }
 
     @Override
     public void execute() {
-        GAP_BUFFER.insert(CHARACTER);
+        gapBuffer.insert(character);
     }
 
     @Override
     public void undo() {
-        if (GAP_BUFFER.getCharBeforeCursor() == '\0') {
+        if (gapBuffer.getCharBeforeCursor() == '\0') {
             return;
         }
-        GAP_BUFFER.deleteChar(Direction.LEFT);
+        gapBuffer.deleteChar(Direction.LEFT);
     }
 }

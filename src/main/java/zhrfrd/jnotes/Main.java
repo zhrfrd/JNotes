@@ -9,7 +9,7 @@ public class Main {
         JFrame frame = new JFrame("Simple JPanel Text Editor");
         JAreaText editor = new JAreaText();
         frame.add(new JScrollPane(editor));
-        frame.setSize(600, 400);
+        frame.setSize(1000, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);

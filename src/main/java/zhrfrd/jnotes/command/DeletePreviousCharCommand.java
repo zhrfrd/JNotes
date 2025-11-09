@@ -4,26 +4,26 @@ import zhrfrd.jnotes.util.Direction;
 import zhrfrd.jnotes.buffer.GapBuffer;
 
 public class DeletePreviousCharCommand implements Command {
-    private final GapBuffer GAP_BUFFER;
+    private final GapBuffer gapBuffer;
     private Character deletedCharacter;
 
     public DeletePreviousCharCommand(GapBuffer gapBuffer) {
-        GAP_BUFFER = gapBuffer;
+        this.gapBuffer = gapBuffer;
     }
 
     @Override
     public void execute() {
-        if (GAP_BUFFER.getCharBeforeCursor() == '\0') {
+        if (gapBuffer.getCharBeforeCursor() == '\0') {
             return;
         }
-        deletedCharacter = GAP_BUFFER.getCharBeforeCursor();
-        GAP_BUFFER.deleteChar(Direction.LEFT);
+        deletedCharacter = gapBuffer.getCharBeforeCursor();
+        gapBuffer.deleteChar(Direction.LEFT);
     }
 
     @Override
     public void undo() {
         if (deletedCharacter != null) {
-            GAP_BUFFER.insert(deletedCharacter);
+            gapBuffer.insert(deletedCharacter);
         }
     }
 }

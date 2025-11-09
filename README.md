@@ -61,7 +61,7 @@ the [Command design pattern](https://refactoring.guru/design-patterns/command) w
 and *Open/Closed Principle*. 
 
 ## TODO
-- [ ] Copy and paste characters.
+- [ ] Copy and paste characters allowing full integration with the system clipboard. (use `Toolkit.getDefaultToolkit().getSystemClipboard()`).
 - [ ] Save file.
 - [ ] Open file.
 - [ ] Move cursor with the mouse.
