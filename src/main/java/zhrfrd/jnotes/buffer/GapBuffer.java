@@ -44,6 +44,12 @@ public class GapBuffer {
         gapStart ++;
     }
 
+    public void insert(String text) {
+        for (char c : text.toCharArray()) {
+            insert(c);
+        }
+    }
+
     /**
      * Delete a character to the left or right of the cursor based on the direction provided.
      * @param direction The direction where to delete the character:
