@@ -61,7 +61,6 @@ the [Command design pattern](https://refactoring.guru/design-patterns/command) w
 and *Open/Closed Principle*. 
 
 ## TODO
-- [ ] Copy and paste characters allowing full integration with the system clipboard. (use `Toolkit.getDefaultToolkit().getSystemClipboard()`).
 - [ ] Save file.
 - [ ] Open file.
 - [ ] Move cursor with the mouse.
@@ -89,6 +88,8 @@ and *Open/Closed Principle*.
     - [x] Highlight up.
     - [x] Highlight down.
     - [x] Show highlight in the text.
+- [x] Copy and paste characters allowing full integration with the system clipboard. (use `Toolkit.getDefaultToolkit().getSystemClipboard()`).
+- [ ] Fix Undo and Redo for Copy and Pasting.
 
 ## Improvements
 - [ ] Adjust text highlight height.
