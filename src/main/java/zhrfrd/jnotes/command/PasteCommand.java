@@ -8,6 +8,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+
 public class PasteCommand implements Command {
     private final GapBuffer gapBuffer;
     private String pastedText = null;
@@ -49,6 +50,11 @@ public class PasteCommand implements Command {
     }
 
     @Override
+    public boolean isUndoable() {
+        return true;
+    }
+
+    @Override
     public void undo() {
         if (pastedText == null || pastedText.isEmpty()) {
             return;
@@ -59,10 +65,5 @@ public class PasteCommand implements Command {
         for (int i = 0; i < pastedText.length(); i++) {
             gapBuffer.deleteChar(Direction.LEFT);
         }
-    }
-
-    @Override
-    public boolean isUndoable() {
-        return true;
     }
 }

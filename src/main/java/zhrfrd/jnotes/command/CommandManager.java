@@ -20,7 +20,6 @@ public class CommandManager {
     public void undo() {
         if (!undoStack.isEmpty()) {
             Command command = undoStack.pop();
-            System.out.println("UNDO: " + command.getClass());
             command.undo();
             redoStack.push(command);
         }
@@ -29,7 +28,6 @@ public class CommandManager {
     public void redo() {
         if (!redoStack.isEmpty()) {
             Command command = redoStack.pop();
-            System.out.println("REDO: " + command.getClass());
             if (command.isUndoable()) {
                 command.execute();
                 undoStack.push(command);

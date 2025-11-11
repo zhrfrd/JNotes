@@ -228,6 +228,33 @@ public class GapBuffer {
     }
 
     /**
+     * Rebuilds the buffer with a gap at the specified position.
+     * @param newGapStart the desired start index of the gap
+     * @param newGapSize  the size of the gap
+     */
+    private void rebuildBuffer(int newGapStart, int newGapSize) {
+        int textLength = getText().length();
+        int newBufferLength = newGapStart + newGapSize + (textLength - newGapStart);
+        char[] newBuffer = new char[newBufferLength];
+
+        String text = getText();
+
+        // Copy text before the gap
+        for (int i = 0; i < newGapStart; i++) {
+            newBuffer[i] = text.charAt(i);
+        }
+
+        // Copy text after the gap
+        for (int i = newGapStart; i < textLength; i ++) {
+            newBuffer[newGapStart + newGapSize + (i - newGapStart)] = text.charAt(i);
+        }
+
+        buffer = newBuffer;
+        gapStart = newGapStart;
+        gapEnd = newGapStart + newGapSize;
+    }
+
+    /**
      * Resize the current buffer and its gap.
      * The current logic doubles the current buffer size and this causes the gap to increase in size too.
      *
@@ -239,23 +266,26 @@ public class GapBuffer {
      */
     protected void resizeGapBuffer(int newBufferLength) {
         int afterGapLength = buffer.length - gapEnd;
-        char[] newBuffer = new char[newBufferLength];
-        int newGapEnd = newBufferLength - afterGapLength;
+        int newGapSize = newBufferLength - afterGapLength - gapStart;
 
-        // Copy characters before the gap to the new temporary buffer.
-        for (int i = 0; i < gapStart; i ++) {
-            newBuffer[i] = buffer[i];
-        }
-
-        // Copy characters after the gap to the new temporary buffer (leaving a gap behind).
-        for (int i = 0; i < afterGapLength; i ++) {
-            newBuffer[i + newGapEnd] = buffer[i + gapEnd];
-        }
-
-        buffer = newBuffer;
-        gapEnd = newGapEnd;
+        rebuildBuffer(gapStart, newGapSize);
     }
 
+    public void setCursorPosition(int position) {
+        position = Math.max(0, Math.min(position, getText().length()));   // Clamp to valid range
+
+        if (position == gapStart) {
+            return;
+        }
+
+        int gapSize = gapEnd - gapStart;
+
+        rebuildBuffer(position, gapSize);
+    }
+
+    /**
+     * Reset highlight boundaries.
+     */
     public void clearHighlight() {
         highlightStart = -1;
         highlightEnd = -1;
@@ -267,39 +297,6 @@ public class GapBuffer {
      */
     public boolean hasHighlight() {
         return highlightStart != -1;
-    }
-
-    public void setCursorPosition(int position) {
-        // Clamp position to valid range
-        position = Math.max(0, Math.min(position, getText().length()));
-
-        int currentCursor = getCursorPosition();
-
-        if (position == currentCursor) {
-            return; // No movement needed
-        }
-
-        int textLength = getText().length();
-
-        // Rebuild a new buffer with the gap placed at the new cursor position
-        String text = getText();
-        char[] newBuffer = new char[buffer.length];
-        int newGapSize = gapEnd - gapStart;
-
-        // Copy text before the cursor into the new buffer
-        for (int i = 0; i < position; i++) {
-            newBuffer[i] = text.charAt(i);
-        }
-
-        // Copy text after the cursor into the new buffer (after the gap)
-        int afterGapStart = position + newGapSize;
-        for (int i = position; i < textLength; i++) {
-            newBuffer[afterGapStart + (i - position)] = text.charAt(i);
-        }
-
-        buffer = newBuffer;
-        gapStart = position;
-        gapEnd = position + newGapSize;
     }
 
     public String getText() {
@@ -393,9 +390,5 @@ public class GapBuffer {
         int highlightEnd = getHighlightEnd();
 
         return highlightStart < highlightEnd ? text.substring(highlightStart, highlightEnd) : text.substring(highlightEnd, highlightStart);
-    }
-
-    public int getCursorPosition() {
-        return gapStart;
     }
 }
