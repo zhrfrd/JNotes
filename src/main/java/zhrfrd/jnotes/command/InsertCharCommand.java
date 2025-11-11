@@ -6,6 +6,7 @@ import zhrfrd.jnotes.buffer.GapBuffer;
 public class InsertCharCommand implements Command {
     private final GapBuffer gapBuffer;
     private final char character;
+    private int positionAtInsert;
 
     public InsertCharCommand(GapBuffer gapBuffer, char character) {
         this.gapBuffer = gapBuffer;
@@ -14,6 +15,7 @@ public class InsertCharCommand implements Command {
 
     @Override
     public void execute() {
+        positionAtInsert = gapBuffer.getGapStart();
         gapBuffer.insert(character);
     }
 
@@ -24,9 +26,7 @@ public class InsertCharCommand implements Command {
 
     @Override
     public void undo() {
-        if (gapBuffer.getCharBeforeCursor() == '\0') {
-            return;
-        }
+        gapBuffer.setCursorPosition(positionAtInsert + 1);   // Move cursor back to where the insertion happened
         gapBuffer.deleteChar(Direction.LEFT);
     }
 }

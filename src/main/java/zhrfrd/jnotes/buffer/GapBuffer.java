@@ -269,6 +269,39 @@ public class GapBuffer {
         return highlightStart != -1;
     }
 
+    public void setCursorPosition(int position) {
+        // Clamp position to valid range
+        position = Math.max(0, Math.min(position, getText().length()));
+
+        int currentCursor = getCursorPosition();
+
+        if (position == currentCursor) {
+            return; // No movement needed
+        }
+
+        int textLength = getText().length();
+
+        // Rebuild a new buffer with the gap placed at the new cursor position
+        String text = getText();
+        char[] newBuffer = new char[buffer.length];
+        int newGapSize = gapEnd - gapStart;
+
+        // Copy text before the cursor into the new buffer
+        for (int i = 0; i < position; i++) {
+            newBuffer[i] = text.charAt(i);
+        }
+
+        // Copy text after the cursor into the new buffer (after the gap)
+        int afterGapStart = position + newGapSize;
+        for (int i = position; i < textLength; i++) {
+            newBuffer[afterGapStart + (i - position)] = text.charAt(i);
+        }
+
+        buffer = newBuffer;
+        gapStart = position;
+        gapEnd = position + newGapSize;
+    }
+
     public String getText() {
         StringBuilder sb = new StringBuilder();
 
@@ -360,5 +393,9 @@ public class GapBuffer {
         int highlightEnd = getHighlightEnd();
 
         return highlightStart < highlightEnd ? text.substring(highlightStart, highlightEnd) : text.substring(highlightEnd, highlightStart);
+    }
+
+    public int getCursorPosition() {
+        return gapStart;
     }
 }
