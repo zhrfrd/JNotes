@@ -60,11 +60,7 @@ To manage user operations such as character insertion and deletion in a structur
 the [Command design pattern](https://refactoring.guru/design-patterns/command) which enforces the *Single Responsibility Principle*
 and *Open/Closed Principle*. 
 
-## TODO
-- [ ] Check repeated work in PasteCommand#execute(). It might need refactoring :<br>
-        ` gapBuffer.setCursorPosition(positionAtInsert);   // Move cursor to the original insertion position.`<br>
-        ` gapBuffer.insert(pastedText);   // Insert text at the stored position.`
-    
+## TODO 
 - [ ] Save file.
 - [ ] Open file.
 - [ ] Move cursor with the mouse.
@@ -94,7 +90,10 @@ and *Open/Closed Principle*.
     - [x] Show highlight in the text.
 - [x] Copy and paste characters allowing full integration with the system clipboard. (use `Toolkit.getDefaultToolkit().getSystemClipboard()`).
 - [x] Fix Undo when pasting text within inserted chars. (The Undo Stack contains also the MoveCursorCommand).
-- 
+- [x] Check repeated work in PasteCommand#execute(). It might need refactoring :<br>
+  ` gapBuffer.setCursorPosition(positionAtInsert);   // Move cursor to the original insertion position.`<br>
+  ` gapBuffer.insert(pastedText);   // Insert text at the stored position.`
+
 ## Improvements
 - [ ] Adjust text highlight height.
 - [ ] Improve the loop that iterates through each line in `paintComponent()`. At the moment the loop runs at each timer tick and this increases with the number of new lines.
