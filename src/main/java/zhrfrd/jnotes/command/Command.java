@@ -10,6 +10,12 @@ public interface Command {
     void execute();
 
     /**
+     * Indicates whether this command supports undoing its action.
+     * @return {@code true} if the command can be undone, {@code false} otherwise.
+     */
+    boolean isUndoable();
+
+    /**
      * Reverts the action previously performed by this command.
      */
     void undo();

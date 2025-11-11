@@ -11,13 +11,16 @@ public class CommandManager {
 
     public void execute(Command command) {
         command.execute();
-        undoStack.push(command);
-        redoStack.clear();
+        if (command.isUndoable()) {
+            undoStack.push(command);
+            redoStack.clear();
+        }
     }
 
     public void undo() {
         if (!undoStack.isEmpty()) {
             Command command = undoStack.pop();
+            System.out.println(command.getClass());
             command.undo();
             redoStack.push(command);
         }

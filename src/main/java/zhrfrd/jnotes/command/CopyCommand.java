@@ -26,6 +26,11 @@ public class CopyCommand implements Command {
     }
 
     @Override
+    public boolean isUndoable() {
+        return false;
+    }
+
+    @Override
     public void undo() {}
 }
 

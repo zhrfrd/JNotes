@@ -18,6 +18,11 @@ public class InsertCharCommand implements Command {
     }
 
     @Override
+    public boolean isUndoable() {
+        return true;
+    }
+
+    @Override
     public void undo() {
         if (gapBuffer.getCharBeforeCursor() == '\0') {
             return;

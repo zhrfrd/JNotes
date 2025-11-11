@@ -37,14 +37,19 @@ public class PasteCommand implements Command {
     }
 
     @Override
+    public boolean isUndoable() {
+        return true;
+    }
+
+    @Override
     public void undo() {
-//        if (gapBuffer.getCharBeforeCursor() == '\0' || pastedText == null || pastedText.isEmpty()) {
-//            return;
-//        }
-//
-//        for (int i = 0; i < pastedText.length(); i ++) {
-//            gapBuffer.deleteChar(Direction.LEFT);
-//        }
+        if (gapBuffer.getCharBeforeCursor() == '\0' || pastedText == null || pastedText.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < pastedText.length(); i ++) {
+            gapBuffer.deleteChar(Direction.LEFT);
+        }
     }
 }
 

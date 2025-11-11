@@ -21,6 +21,11 @@ public class DeleteNextCharCommand implements Command {
     }
 
     @Override
+    public boolean isUndoable() {
+        return true;
+    }
+
+    @Override
     public void undo() {
         if (deletedCharacter != null) {
             gapBuffer.insert(deletedCharacter);

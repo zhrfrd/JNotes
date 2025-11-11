@@ -18,5 +18,10 @@ public class HighlightCommand implements Command {
     }
 
     @Override
+    public boolean isUndoable() {
+        return false;
+    }
+
+    @Override
     public void undo() {}
 }
