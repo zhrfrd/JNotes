@@ -6,15 +6,17 @@ import zhrfrd.jnotes.util.Direction;
 public class HighlightCommand implements Command {
     private final GapBuffer gapBuffer;
     private final Direction direction;
+    private final boolean isModifierDown;
 
-    public HighlightCommand(GapBuffer gapBuffer, int directionKeyCode) {
+    public HighlightCommand(GapBuffer gapBuffer, int directionKeyCode, boolean isModifierDown) {
         this.gapBuffer = gapBuffer;
         this.direction = Direction.fromKeyCode(directionKeyCode);
+        this.isModifierDown = isModifierDown;
     }
 
     @Override
     public void execute() {
-        gapBuffer.highlightChar(direction);
+        gapBuffer.highlightChar(direction, isModifierDown);
     }
 
     @Override

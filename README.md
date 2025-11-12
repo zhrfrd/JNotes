@@ -61,6 +61,8 @@ the [Command design pattern](https://refactoring.guru/design-patterns/command) w
 and *Open/Closed Principle*. 
 
 ## TODO 
+- [ ] Quick move the cursor at the beginning of the line.
+- [ ] Quick move the cursor at the end of the line.
 - [ ] Save file.
 - [ ] Open file.
 - [ ] Move cursor with the mouse.

@@ -72,12 +72,46 @@ public class GapBuffer {
      * If no selection exists, starts a new selection from the current cursor position.
      * @param direction The direction to extend the selection: {@code LEFT}, {@code RIGHT}, {@code UP}, {@code DOWN}.
      */
-    public void highlightChar(Direction direction) {
+    public void highlightChar(Direction direction, boolean isModifierDown) {
         if (highlightStart == -1) {
             highlightStart = gapStart;   // gapStart is not yet updated by the cursor movement. This will happen when moveCursorPreserveSelection() is called.
         }
+
+        String text = getText();
+
+        switch (direction) {
+            case LEFT:
+                if (gapStart > 0) {
+                    if (isModifierDown) {
+                        int lineStart = getText(gapStart).lastIndexOf('\n') + 1;   // Jump-select to beginning of the current line.
+                        setCursorPosition(lineStart);
+                    } else {
+                        setCursorPosition(gapStart - 1);
+                    }
+                }
+                break;
+
+            case RIGHT:
+                if (gapStart < text.length()) {
+                    if (isModifierDown) {
+                        int lineEnd = text.indexOf('\n', gapStart);   // Jump-select to end of the current line.
+                        if (lineEnd == -1) {
+                            lineEnd = text.length();
+                        }
+                        setCursorPosition(lineEnd);
+                    } else {
+                        setCursorPosition(gapStart + 1);
+                    }
+                }
+                break;
+
+            case UP:
+            case DOWN:
+                moveCursorAndPreserveHighlight(direction, isModifierDown);
+                break;
+        }
         
-        moveCursorAndPreserveHighlight(direction);
+        moveCursorAndPreserveHighlight(direction, false);
         highlightEnd = gapStart;   // Update selection end to the new cursor position.
 
         // TODO: Maybe remove
@@ -88,12 +122,14 @@ public class GapBuffer {
 
     /**
      * Change the cursor position by using the arrow keys. This method also updates the gap position in the buffer.
-     * <p><b>Note:</b> This method clears any existing selection. Use highlightChar() to move cursor while maintaining selection.</p>
+     * <p><b>Note:</b> This method clears any existing selection. Use {@link #highlightChar(Direction, boolean)} to move cursor while maintaining selection.</p>
      * @param direction The direction to move the cursor: {@code LEFT}, {@code RIGHT}, {@code UP}, {@code DOWN}.
+     * @param isModifierDown {@code true} if the modifier key (Ctrl/⌘) is pressed to perform a line-jump movement,
+     * {@code false} for normal movement.
      */
-    public void moveCursor(Direction direction) {
+    public void moveCursor(Direction direction, boolean isModifierDown) {
         clearHighlight();
-        moveCursorAndPreserveHighlight(direction);
+        moveCursorAndPreserveHighlight(direction, isModifierDown);
     }
 
     /**
@@ -101,29 +137,42 @@ public class GapBuffer {
      * This is used by highlightChar() to move the cursor while maintaining selection state.
      * @param direction The direction to move the cursor: {@code LEFT}, {@code RIGHT}, {@code UP}, {@code DOWN}.
      */
-    private void moveCursorAndPreserveHighlight(Direction direction) {
+    private void moveCursorAndPreserveHighlight(Direction direction, boolean isModifierDown) {
+        String textUpToCursor = getText(getGapStart());   // NOTE: The cursor has not been moved yet.
+        int currentLineIndex = textUpToCursor.lastIndexOf("\n");   // Total number of characters until the beginning of the current line.
+        int currentLineLengthBeforeGap = gapStart - currentLineIndex - 1;
+
         switch (direction) {
             case LEFT:
                 if (gapStart > 0) {
-                    gapStart --;
-                    gapEnd --;
-                    moveGap(Direction.LEFT);
+                    if (isModifierDown) {
+                        int lineStart = textUpToCursor.lastIndexOf('\n') + 1; // -1 -> 0
+                        setCursorPosition(lineStart);
+                    } else {
+                        setCursorPosition(gapStart - 1);
+                    }
                 }
                 break;
-            case RIGHT:
-                if (gapEnd < buffer.length) {
-                    gapStart ++;
-                    gapEnd ++;
-                    moveGap(Direction.RIGHT);
+            case RIGHT: {
+                String fullText = getText();
+                int textLength = fullText.length();
+
+                if (gapStart < textLength) {
+                    if (isModifierDown) {
+                        int lineEnd = fullText.indexOf('\n', gapStart);
+                        if (lineEnd == -1) lineEnd = textLength;
+                        setCursorPosition(lineEnd);
+                    } else {
+                        setCursorPosition(gapStart + 1);
+                    }
                 }
                 break;
+            }
+
             case UP: {
-                String textUpToCursor = getText(getGapStart());   // NOTE: The cursor has not been moved yet.
                 String[] linesUpToCursor = textUpToCursor.split("\n", -1);   // -1 keeps empty strings at the end.
 
                 if (linesUpToCursor.length > 1) {
-                    int currentLineIndex = textUpToCursor.lastIndexOf("\n");   // Total number of characters until the beginning of the current line.
-                    int currentLineLengthBeforeGap = gapStart - currentLineIndex - 1;
                     String previousLine = linesUpToCursor[linesUpToCursor.length - 2];
 
                     if (previousLine.length() >= currentLineLengthBeforeGap) {
@@ -139,7 +188,6 @@ public class GapBuffer {
             }
             case DOWN: {
                 String text = getText();
-                String textUpToCursor = getText(getGapStart());   // NOTE: The cursor has not been moved yet.
                 String[] linesUpToCursor = textUpToCursor.split("\n", -1);   // -1 keeps empty strings at the end.
                 String[] lines = text.split("\n", -1);
 
@@ -228,6 +276,24 @@ public class GapBuffer {
     }
 
     /**
+     * Moves the cursor to the specified position within the text and repositions the internal gap accordingly.
+     * If the provided position is outside the valid text range, it is automatically
+     * clamped between {@code 0} and {@code getText().length()}.
+     * @param position The new cursor position in the text (0-based index).
+     */
+    public void setCursorPosition(int position) {
+        position = Math.max(0, Math.min(position, getText().length()));   // Clamp to valid range
+
+        if (position == gapStart) {
+            return;
+        }
+
+        int gapSize = gapEnd - gapStart;
+
+        rebuildBuffer(position, gapSize);
+    }
+
+    /**
      * Rebuilds the buffer with a gap at the specified position.
      * @param newGapStart the desired start index of the gap
      * @param newGapSize  the size of the gap
@@ -269,18 +335,6 @@ public class GapBuffer {
         int newGapSize = newBufferLength - afterGapLength - gapStart;
 
         rebuildBuffer(gapStart, newGapSize);
-    }
-
-    public void setCursorPosition(int position) {
-        position = Math.max(0, Math.min(position, getText().length()));   // Clamp to valid range
-
-        if (position == gapStart) {
-            return;
-        }
-
-        int gapSize = gapEnd - gapStart;
-
-        rebuildBuffer(position, gapSize);
     }
 
     /**

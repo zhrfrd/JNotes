@@ -3,7 +3,6 @@ package zhrfrd.jnotes.buffer;
 import org.junit.jupiter.api.Test;
 import zhrfrd.jnotes.util.Direction;
 
-import java.awt.event.KeyEvent;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -90,7 +89,7 @@ class GapBufferTest {
         }
 
         for (int i = 0; i < 30; i ++) {
-            gapBuffer.moveCursor(Direction.LEFT);
+            gapBuffer.moveCursor(Direction.LEFT, false);
         }
 
         assertEquals(0, gapBuffer.getGapStart(), "Cursor should be at position 0 (beginning).");
@@ -109,7 +108,7 @@ class GapBufferTest {
         gapBuffer.insert('g');
 
         for (int i = 0; i < 4; i ++) {
-            gapBuffer.moveCursor(Direction.LEFT);
+            gapBuffer.moveCursor(Direction.LEFT, false);
         }
 
         assertEquals(3, gapBuffer.getGapStart(), "Cursor should be moved 4 positions to the left.");
@@ -142,7 +141,7 @@ class GapBufferTest {
         gapBuffer.insert('g');
 
         for (int i = 0; i < 4; i ++) {
-            gapBuffer.moveCursor(Direction.LEFT);
+            gapBuffer.moveCursor(Direction.LEFT, false);
         }
 
         assertEquals(3, gapBuffer.getGapStart(), "Cursor should be moved 4 positions to the left.");
@@ -157,7 +156,7 @@ class GapBufferTest {
         gapBuffer.insert('c');
         
         int initialPosition = gapBuffer.getGapStart();
-        gapBuffer.moveCursor(Direction.LEFT);
+        gapBuffer.moveCursor(Direction.LEFT, false);
         
         assertEquals(initialPosition - 1, gapBuffer.getGapStart(), "Gap should move left by 1 position.");
         assertEquals('b', gapBuffer.getCharBeforeCursor(), "Character after cursor should be 'b'.");
@@ -168,11 +167,11 @@ class GapBufferTest {
         GapBuffer gapBuffer = new GapBuffer(100);
         gapBuffer.insert('a');
         gapBuffer.insert('b');
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
         
         int positionAtStart = gapBuffer.getGapStart();
-        gapBuffer.moveCursor(Direction.LEFT);
+        gapBuffer.moveCursor(Direction.LEFT, false);
         
         assertEquals(positionAtStart, gapBuffer.getGapStart(), "Cursor should not move to the left when at beginning.");
         assertEquals('\0', gapBuffer.getCharBeforeCursor(), "Should return null character at beginning.");
@@ -186,11 +185,11 @@ class GapBufferTest {
         gapBuffer.insert('c');
         
         // Move cursor left first to have some characters at its right.
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
         
         int positionBeforeMove = gapBuffer.getGapStart();
-        gapBuffer.moveCursor(Direction.RIGHT);
+        gapBuffer.moveCursor(Direction.RIGHT, false);
         
         assertEquals(positionBeforeMove + 1, gapBuffer.getGapStart(), "Cursor should move right by 1 position.");
         assertEquals('b', gapBuffer.getCharBeforeCursor(), "Character before cursor should be 'b'.");
@@ -204,7 +203,7 @@ class GapBufferTest {
         gapBuffer.insert('c');
         
         int initialGapStart = gapBuffer.getGapStart();
-        gapBuffer.moveCursor(Direction.RIGHT);
+        gapBuffer.moveCursor(Direction.RIGHT, false);
         
         assertEquals(initialGapStart, gapBuffer.getGapStart(), "Cursor should not move right when at the end of the text.");
     }
@@ -219,7 +218,7 @@ class GapBufferTest {
         gapBuffer.insert('d');
         gapBuffer.insert('e');
         gapBuffer.insert('f');
-        gapBuffer.moveCursor(Direction.UP);
+        gapBuffer.moveCursor(Direction.UP, false);
 
         assertEquals(gapBuffer.getCharBeforeCursor(), 'c', "The cursor should have moved up, after the letter 'c'.");
     }
@@ -232,7 +231,7 @@ class GapBufferTest {
         gapBuffer.insert('c');
         
         int positionAtFirstLine = gapBuffer.getGapStart();
-        gapBuffer.moveCursor(Direction.UP);
+        gapBuffer.moveCursor(Direction.UP, false);
         
         assertEquals(positionAtFirstLine, gapBuffer.getGapStart(), "Cursor should not move up when at the first line.");
     }
@@ -248,7 +247,7 @@ class GapBufferTest {
         gapBuffer.insert('\n');
         gapBuffer.insert('f');
         gapBuffer.insert('g');
-        gapBuffer.moveCursor(Direction.UP);
+        gapBuffer.moveCursor(Direction.UP, false);
 
         assertEquals(gapBuffer.getCharBeforeCursor(), 'b', "The cursor should have moved up after the letter 'b'.");
     }
@@ -263,8 +262,8 @@ class GapBufferTest {
         gapBuffer.insert('d');
         gapBuffer.insert('e');
         gapBuffer.insert('f');
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.UP);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.UP, false);
 
         assertEquals(gapBuffer.getCharBeforeCursor(), 'b', "The cursor should have move up at the end of the line after letter 'c'.");
     }
@@ -279,13 +278,13 @@ class GapBufferTest {
         gapBuffer.insert('d');
         gapBuffer.insert('e');
         gapBuffer.insert('f');
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
         
         int positionBeforeDown = gapBuffer.getGapStart();
-        gapBuffer.moveCursor(Direction.DOWN);
+        gapBuffer.moveCursor(Direction.DOWN, false);
         
         assertEquals(gapBuffer.getCharBeforeCursor(), 'f', "The cursor should have move to the next line after letter 'f'.");
     }
@@ -301,7 +300,7 @@ class GapBufferTest {
         gapBuffer.insert('e');
         
         int positionAtLastLine = gapBuffer.getGapStart();
-        gapBuffer.moveCursor(Direction.DOWN);
+        gapBuffer.moveCursor(Direction.DOWN, false);
         
         assertEquals(positionAtLastLine, gapBuffer.getGapStart(), "Cursor should not move down when at last line.");
     }
@@ -316,13 +315,13 @@ class GapBufferTest {
         gapBuffer.insert('d');
         gapBuffer.insert('e');
         gapBuffer.insert('f');
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.DOWN);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.DOWN, false);
 
         assertEquals(gapBuffer.getCharBeforeCursor(), 'c', "The cursor should have moved down to the same column after letter 'a'.");
     }
@@ -338,12 +337,12 @@ class GapBufferTest {
         gapBuffer.insert('\n');
         gapBuffer.insert('f');
         gapBuffer.insert('g');
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.DOWN);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.DOWN, false);
 
         assertEquals(gapBuffer.getCharBeforeCursor(), 'g', "The cursor should have moved up to the same column after letter 'g'.");
     }
@@ -356,8 +355,8 @@ class GapBufferTest {
         gapBuffer.insert('c');
         
         String originalText = gapBuffer.getText();
-        gapBuffer.moveCursor(Direction.LEFT);
-        gapBuffer.moveCursor(Direction.RIGHT);
+        gapBuffer.moveCursor(Direction.LEFT, false);
+        gapBuffer.moveCursor(Direction.RIGHT, false);
         
         assertEquals(originalText, gapBuffer.getText(), "Text should remain unchanged after moving cursor.");
     }

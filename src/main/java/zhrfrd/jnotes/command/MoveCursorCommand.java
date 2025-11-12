@@ -6,15 +6,17 @@ import zhrfrd.jnotes.util.Direction;
 public class MoveCursorCommand implements Command {
     private final GapBuffer gapBuffer;
     private final Direction direction;
+    private final boolean isModifierDown;
 
-    public MoveCursorCommand(GapBuffer gapBuffer, int keyCode) {
+    public MoveCursorCommand(GapBuffer gapBuffer, int keyCode, boolean isModifierDown) {
         this.gapBuffer = gapBuffer;
         direction = Direction.fromKeyCode(keyCode);
+        this.isModifierDown = isModifierDown;
     }
 
     @Override
     public void execute() {
-        gapBuffer.moveCursor(direction);
+        gapBuffer.moveCursor(direction, isModifierDown);
     }
 
     @Override
