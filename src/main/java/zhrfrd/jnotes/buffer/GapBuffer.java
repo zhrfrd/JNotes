@@ -84,9 +84,9 @@ public class GapBuffer {
                 if (gapStart > 0) {
                     if (isModifierDown) {
                         int lineStart = getText(gapStart).lastIndexOf('\n') + 1;   // Jump-select to beginning of the current line.
-                        setCursorPosition(lineStart);
+                        setCursorPosition(lineStart + 1);
                     } else {
-                        setCursorPosition(gapStart - 1);
+                        setCursorPosition(gapStart);
                     }
                 }
                 break;
@@ -98,9 +98,9 @@ public class GapBuffer {
                         if (lineEnd == -1) {
                             lineEnd = text.length();
                         }
-                        setCursorPosition(lineEnd);
+                        setCursorPosition(lineEnd - 1);
                     } else {
-                        setCursorPosition(gapStart + 1);
+                        setCursorPosition(gapStart);
                     }
                 }
                 break;
@@ -384,37 +384,6 @@ public class GapBuffer {
     public String getText(int end) {
         return buildText(0, end, false);
     }
-
-
-
-//    public String getText() {
-//        StringBuilder sb = new StringBuilder();
-//
-//        for (int i = 0; i < gapStart; i ++) {
-//            sb.append(buffer[i]);
-//        }
-//
-//        for (int i = gapEnd; i < buffer.length; i ++) {
-//            sb.append(buffer[i]);
-//        }
-//
-//        return sb.toString();
-//    }
-//
-//    /**
-//     * Get text up until the index indicated in the parameter.
-//     * @param end The index up until to extract the text.
-//     * @return The text in String format.
-//     */
-//    public String getText(int end) {
-//        StringBuilder sb = new StringBuilder();
-//
-//        for (int i = 0; i < end; i ++) {
-//            sb.append(buffer[i]);
-//        }
-//
-//        return sb.toString();
-//    }
 
     public int getGapStart() {
         return gapStart;
