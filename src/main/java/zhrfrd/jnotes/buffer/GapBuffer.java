@@ -3,7 +3,7 @@ package zhrfrd.jnotes.buffer;
 import zhrfrd.jnotes.util.Direction;
 
 public class GapBuffer {
-    private final int DEFAULT_BUFFER_SIZE = 20;   // TODO: Change back to 1024. 20 is just for quickly test.
+    private static final int DEFAULT_BUFFER_SIZE = 20;   // TODO: Change back to 1024. 20 is just for quickly test.
     /** Array that holds the text (and the gap). */
     private char[] buffer;
     /** The index of the beginning of the gap. It always matches the position of the cursor. */
@@ -353,18 +353,27 @@ public class GapBuffer {
         return highlightStart != -1;
     }
 
-    public String getText() {
+    /**
+     * Builds and returns a substring of the buffer between the specified start and end indices.
+     * @param start The starting index (inclusive) of the range to extract from the buffer.
+     * @param end The ending index (exclusive) of the range to extract from the buffer.
+     * @param skipGap {@code true} to skip the gap region, {@code false} to include it.
+     * @return A {@link String} representing the text extracted from the specified range.
+     */
+    private String buildText(int start, int end, boolean skipGap) {
         StringBuilder sb = new StringBuilder();
 
-        for (int i = 0; i < gapStart; i ++) {
-            sb.append(buffer[i]);
-        }
-
-        for (int i = gapEnd; i < buffer.length; i ++) {
-            sb.append(buffer[i]);
+        for (int i = start; i < end; i++) {
+            if (!skipGap || (i < gapStart || i >= gapEnd)) {
+                sb.append(buffer[i]);
+            }
         }
 
         return sb.toString();
+    }
+
+    public String getText() {
+        return buildText(0, buffer.length, true);
     }
 
     /**
@@ -373,14 +382,39 @@ public class GapBuffer {
      * @return The text in String format.
      */
     public String getText(int end) {
-        StringBuilder sb = new StringBuilder();
-
-        for (int i = 0; i < end; i ++) {
-            sb.append(buffer[i]);
-        }
-
-        return sb.toString();
+        return buildText(0, end, false);
     }
+
+
+
+//    public String getText() {
+//        StringBuilder sb = new StringBuilder();
+//
+//        for (int i = 0; i < gapStart; i ++) {
+//            sb.append(buffer[i]);
+//        }
+//
+//        for (int i = gapEnd; i < buffer.length; i ++) {
+//            sb.append(buffer[i]);
+//        }
+//
+//        return sb.toString();
+//    }
+//
+//    /**
+//     * Get text up until the index indicated in the parameter.
+//     * @param end The index up until to extract the text.
+//     * @return The text in String format.
+//     */
+//    public String getText(int end) {
+//        StringBuilder sb = new StringBuilder();
+//
+//        for (int i = 0; i < end; i ++) {
+//            sb.append(buffer[i]);
+//        }
+//
+//        return sb.toString();
+//    }
 
     public int getGapStart() {
         return gapStart;
