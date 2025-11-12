@@ -43,6 +43,18 @@ class GapBufferTest {
     }
 
     @Test
+    void insert_StringInsideBuffer_decreasesGapSize() {
+        GapBuffer gapBuffer = new GapBuffer();
+        int initialGapSize = gapBuffer.getGapEnd() - gapBuffer.getGapStart();;
+
+        gapBuffer.insert("Test text");
+
+        int newGapSize = gapBuffer.getGapEnd() - gapBuffer.getGapStart();
+
+        assertEquals(initialGapSize - 9, newGapSize, "Gap size should decrease by 9 after inserting a String of size 9.");
+    }
+
+    @Test
     void delete_charInsideBufferToTheLeft_increaseGapSize() {
         GapBuffer gapBuffer = new GapBuffer(100);
         Random random = new Random();

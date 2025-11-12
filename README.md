@@ -46,6 +46,44 @@ Run a specific test class:
 ./gradlew test --tests "zhrfrd.jnotes.GapBufferTest"
 ```
 
+## Repository structure
+```
+JNotes/
+├── src
+│   ├── main
+│   │   ├── java
+│   │   │   └── zhrfrd
+│   │   │       └── jnotes
+│   │   │           ├── buffer
+│   │   │           │   └── GapBuffer.java
+│   │   │           ├── command
+│   │   │           │   ├── Command.java
+│   │   │           │   ├── CommandManager.java
+│   │   │           │   ├── CopyCommand.java
+│   │   │           │   ├── DeleteNextCharCommand.java
+│   │   │           │   ├── DeletePreviousCharCommand.java
+│   │   │           │   ├── HighlightCommand.java
+│   │   │           │   ├── InsertCharCommand.java
+│   │   │           │   ├── Command.java
+│   │   │           │   ├── MoveCursorCommand.java
+│   │   │           │   └── PasteCommand.java
+│   │   │           ├── ui
+│   │   │           │   └── JAreaText.java
+│   │   │           ├── util
+│   │   │           │   └── Direction.java
+│   │   │           └── Main.java
+│   │   └── resources
+│   └── test
+│       ├── zhrfrd
+│       │   └── jnotes
+│       │       └── myeditor
+│       │           ├── buffer
+│       │           └───── GapBufferTest.java
+├───────└── resources
+├── pom.xml
+├── README.md
+└── .gitignore
+```
 
 ## Approach and design choices
 The first naive approach I've used to handle the logic for sequential characters insertion, deletion, cursor movement
@@ -60,9 +98,7 @@ To manage user operations such as character insertion and deletion in a structur
 the [Command design pattern](https://refactoring.guru/design-patterns/command) which enforces the *Single Responsibility Principle*
 and *Open/Closed Principle*. 
 
-## TODO 
-- [ ] Quick move the cursor at the beginning of the line.
-- [ ] Quick move the cursor at the end of the line.
+## TODO
 - [ ] Save file.
 - [ ] Open file.
 - [ ] Move cursor with the mouse.
@@ -95,6 +131,8 @@ and *Open/Closed Principle*.
 - [x] Check repeated work in PasteCommand#execute(). It might need refactoring :<br>
   ` gapBuffer.setCursorPosition(positionAtInsert);   // Move cursor to the original insertion position.`<br>
   ` gapBuffer.insert(pastedText);   // Insert text at the stored position.`
+- [x] Quick move the cursor at the beginning of the line.
+- [x] Quick move the cursor at the end of the line.
 
 ## Improvements
 - [ ] Adjust text highlight height.
