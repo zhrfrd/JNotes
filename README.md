@@ -1,4 +1,7 @@
 # JNotes
+
+![MIT License](https://img.shields.io/badge/License-MIT-yellow.svg)
+
 JNotes is a simple text editor I'm developing to explore the challenges that arise when building something seemingly simple, 
 like a text editor. The inspiration for this project came from Austin Z. Henley's article,
 [Challenging projects every programmer should try](https://austinhenley.com/blog/challengingprojects.html), which highlights various data structures I might use and other
