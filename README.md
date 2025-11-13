@@ -8,14 +8,14 @@ like a text editor. The inspiration for this project came from Austin Z. Henley'
 interesting key concepts.
 
 ## Features
-- [ ] Enter and edit text.
-- [ ] Insert new lines.
-- [ ] Delete characters to the left or right of the cursor.
-- [ ] Navigate the cursor using arrow keys (up, down, left, right).
-- [ ] Highlight text in any direction from the cursor.
-- [ ] Jump the cursor to the start or end of a line.
-- [ ] Highlight text from the cursor to the start or end of a line.
-- [ ] Undo and redo actions.
+- [x] Enter and edit text.
+- [x] Insert new lines.
+- [x] Delete characters to the left or right of the cursor.
+- [x] Navigate the cursor using arrow keys (up, down, left, right).
+- [x] Highlight text in any direction from the cursor.
+- [x] Jump the cursor to the start or end of a line.
+- [x] Highlight text from the cursor to the start or end of a line.
+- [x] Undo and redo actions.
 
 ## Approach and design choices
 The first naive approach I've used to handle the logic for sequential characters insertion, deletion, cursor movement
@@ -148,6 +148,7 @@ JNotes/
 - [x] Quick move the cursor at the end of the line.
 
 ## Improvements
+- [ ] Change the way the gap is moved within then method 'moveCursorAndPreserveHighlight'. At the moment LEFT nad RIGHT call 'setCursorPosition' but UP and DOWN call 'moveGap'.
 - [ ] Adjust text highlight height.
 - [ ] Improve the loop that iterates through each line in `paintComponent()`. At the moment the loop runs at each timer tick and this increases with the number of new lines.
     Moreover, it runs each time you type on the editor decreasing obviously it's performance.

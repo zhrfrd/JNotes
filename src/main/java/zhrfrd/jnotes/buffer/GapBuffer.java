@@ -110,12 +110,20 @@ public class GapBuffer {
                 moveCursorAndPreserveHighlight(direction, isModifierDown);
                 break;
         }
-        
-        moveCursorAndPreserveHighlight(direction, false);
-        highlightEnd = gapStart;   // Update selection end to the new cursor position.
+
+        // Only move cursor again for LEFT and RIGHT
+        if (direction == Direction.LEFT || direction == Direction.RIGHT) {
+            moveCursorAndPreserveHighlight(direction, false);
+        }
+
+        highlightEnd = gapStart;
 
         // TODO: Maybe remove
-        if (highlightStart == highlightEnd) {
+//        if (highlightStart == highlightEnd) {
+//            clearHighlight();
+//        }
+
+        if ((highlightStart == highlightEnd) && (direction == Direction.LEFT || direction == Direction.RIGHT)) {
             clearHighlight();
         }
     }
@@ -227,21 +235,7 @@ public class GapBuffer {
             }
         }
 
-        if (direction == Direction.LEFT) {
-            char charToMove =  buffer[gapStart];
-            newBuffer[gapEnd] = charToMove;
-
-            for (int i = 1; i < charsCountAfterGap; i ++) {
-                newBuffer[gapEnd + i] = buffer[gapEnd + i];
-            }
-        } else if (direction == Direction.RIGHT) {
-            char charToMove =  buffer[gapEnd - 1];
-            newBuffer[gapStart - 1] = charToMove;
-
-            for (int i = 0; i < charsCountAfterGap; i ++) {
-                newBuffer[gapEnd + i] = buffer[gapEnd + i];
-            }
-        } else if (direction == Direction.UP) {
+        if (direction == Direction.UP) {
             StringBuilder sb = new StringBuilder();
 
             // Create a StringBuilder from the buffer without the empty spaces of the gap.

@@ -372,4 +372,106 @@ class GapBufferTest {
         
         assertEquals(originalText, gapBuffer.getText(), "Text should remain unchanged after moving cursor.");
     }
+
+    @Test
+    void highlightChar_leftWithoutModifier_changesHighlightAndGapPosition() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('H');
+        gapBuffer.insert('e');
+        gapBuffer.insert('l');
+        gapBuffer.insert('l');
+        gapBuffer.insert('o');
+        gapBuffer.setCursorPosition(5);
+        gapBuffer.highlightChar(Direction.LEFT, false);
+        assertEquals(4, gapBuffer.getGapStart());
+        assertEquals(gapBuffer.getGapStart(), gapBuffer.getHighlightEnd());
+        assertEquals(5, gapBuffer.getHighlightStart());
+    }
+
+    @Test
+    void highlightChar_leftWithModifier_changesHighlightAndGapPosition() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('H');
+        gapBuffer.insert('e');
+        gapBuffer.insert('l');
+        gapBuffer.insert('l');
+        gapBuffer.insert('o');
+        gapBuffer.setCursorPosition(5);
+        gapBuffer.highlightChar(Direction.LEFT, true);
+
+        assertEquals(0, gapBuffer.getGapStart());
+        assertEquals(5, gapBuffer.getHighlightStart());
+        assertEquals(gapBuffer.getGapStart(), gapBuffer.getHighlightEnd());
+    }
+
+    @Test
+    void highlightChar_rightWithoutModifier_changesHighlightAndGapPosition() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('H');
+        gapBuffer.insert('e');
+        gapBuffer.insert('l');
+        gapBuffer.insert('l');
+        gapBuffer.insert('o');
+        gapBuffer.setCursorPosition(0);
+        gapBuffer.highlightChar(Direction.RIGHT, false);
+
+        assertEquals(1, gapBuffer.getGapStart());
+        assertEquals(0, gapBuffer.getHighlightStart());
+        assertEquals(gapBuffer.getGapStart(), gapBuffer.getHighlightEnd());
+    }
+
+    @Test
+    void highlightChar_rightWithModifier_changesHighlightAndGapPosition() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert('H');
+        gapBuffer.insert('e');
+        gapBuffer.insert('l');
+        gapBuffer.insert('l');
+        gapBuffer.insert('o');
+        gapBuffer.setCursorPosition(0);
+        gapBuffer.highlightChar(Direction.RIGHT, true);
+
+        assertEquals(5, gapBuffer.getGapStart());
+        assertEquals(0, gapBuffer.getHighlightStart());
+        assertEquals(gapBuffer.getGapStart(), gapBuffer.getHighlightEnd());
+    }
+
+    @Test
+    void highlightChar_upAndDown_changesHighlightAndGapPosition() {
+        GapBuffer gapBuffer = new GapBuffer(100);
+        gapBuffer.insert("Hello\nWorld");
+        gapBuffer.setCursorPosition(gapBuffer.getText().length());
+        gapBuffer.highlightChar(Direction.UP, false);
+
+        assertTrue(gapBuffer.hasHighlight());
+        assertEquals(gapBuffer.getGapStart(), gapBuffer.getHighlightEnd());
+
+        gapBuffer.highlightChar(Direction.DOWN, false);
+        assertTrue(gapBuffer.hasHighlight());
+        assertEquals(gapBuffer.getGapStart(), gapBuffer.getHighlightEnd());
+    }
+
+    @Test
+    void getHighlightedText_noSelection_returnsEmptyString() {
+        GapBuffer gapBuffer = new GapBuffer(50);
+        gapBuffer.insert("Hello");
+
+        assertEquals("", gapBuffer.getHighlightedText());
+    }
+
+    @Test
+    void getHighlightedText_simpleLeftSelection_returnsCorrectText() {
+        GapBuffer gapBuffer = new GapBuffer(50);
+        gapBuffer.insert("Hello World");
+        gapBuffer.setCursorPosition(5);
+        gapBuffer.highlightChar(Direction.LEFT, false);
+        gapBuffer.highlightChar(Direction.LEFT, false);
+        gapBuffer.highlightChar(Direction.LEFT, false);
+        gapBuffer.highlightChar(Direction.LEFT, false);
+        gapBuffer.highlightChar(Direction.LEFT, false);
+
+        assertEquals("Hello", gapBuffer.getHighlightedText());
+    }
+
+
 }
