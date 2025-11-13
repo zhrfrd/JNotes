@@ -323,10 +323,8 @@ public class GapBuffer {
     /**
      * Resize the current buffer and its gap.
      * The current logic doubles the current buffer size and this causes the gap to increase in size too.
-     *
      * <p><b>Note:</b> gapStart doesn't change during the resize process because it matches the cursor position
      * and the preceding text remains unchanged.</p>
-     *
      * @param newBufferLength The new buffer length to assign to the buffer. The new buffer length doesn't change
      *                        during deletion. It changes only if the gap is full during insertion.
      */
