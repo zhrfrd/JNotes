@@ -16,6 +16,7 @@ interesting key concepts.
 - [x] Jump the cursor to the start or end of a line.
 - [x] Highlight text from the cursor to the start or end of a line.
 - [x] Undo and redo actions.
+- [x] Save, Save As and Open file.
 
 ## Approach and design choices
 The first naive approach I've used to handle the logic for sequential characters insertion, deletion, cursor movement
@@ -94,7 +95,8 @@ JNotes/
 │   │   │           │   ├── MoveCursorCommand.java
 │   │   │           │   └── PasteCommand.java
 │   │   │           ├── ui
-│   │   │           │   └── JAreaText.java
+│   │   │           │   ├── JAreaText.java
+│   │   │           │   └── JAreaTextMenuBar.java
 │   │   │           ├── util
 │   │   │           │   └── Direction.java
 │   │   │           └── Main.java
@@ -112,8 +114,6 @@ JNotes/
 ```
 
 ## TODO
-- [ ] Save file.
-- [ ] Open file.
 - [ ] Move cursor with the mouse.
   - [ ] Reset gap position.
 - [x] Start a new line when pressing Enter.
@@ -146,6 +146,8 @@ JNotes/
   ` gapBuffer.insert(pastedText);   // Insert text at the stored position.`
 - [x] Quick move the cursor at the beginning of the line.
 - [x] Quick move the cursor at the end of the line.
+- [x] Save file.
+- [x] Open file.
 
 ## Improvements
 - [ ] Change the way the gap is moved within then method 'moveCursorAndPreserveHighlight'. At the moment LEFT nad RIGHT call 'setCursorPosition' but UP and DOWN call 'moveGap'.

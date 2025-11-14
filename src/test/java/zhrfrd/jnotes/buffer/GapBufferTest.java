@@ -472,6 +472,4 @@ class GapBufferTest {
 
         assertEquals("Hello", gapBuffer.getHighlightedText());
     }
-
-
 }

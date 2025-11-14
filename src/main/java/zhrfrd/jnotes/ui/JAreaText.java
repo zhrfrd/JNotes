@@ -16,8 +16,8 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
     private static final int CARET_Y_OFFSET = 5;
     private static final Color HIGHLIGHT_COLOR = new Color(50, 100, 200);
     private static final Color TEXT_COLOR = Color.WHITE;
-    private final GapBuffer gapBuffer;
     private final CommandManager commandManager;
+    private GapBuffer gapBuffer;
     private boolean caretVisible;
 
     public JAreaText() {
@@ -30,24 +30,24 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
         addKeyListener(this);
         addFocusListener(this);
 
-        // Set a monospace font so all characters have the same width
+        // Set a monospace font so all characters have the same width.
         setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
 
         // Timer for caret blinking
         Timer timer = new Timer(500, e -> {
             caretVisible = !caretVisible;
-//            repaint();
+            repaint();
         });
         timer.start();
     }
 
     private void drawText(Graphics g, int lineHeight) {
-        String text = gapBuffer.getText();
+        String text = getTextContent();
         FontMetrics fontMetrics = g.getFontMetrics();
-        
+
         // Split text into lines and draw each line separately.
         String[] lines = text.split("\n", -1);   // -1 keeps empty strings at the end.
-        
+
         // Draw highlight background if there's a selection
         if (gapBuffer.hasHighlight()) {
             drawHighlight(g, fontMetrics, lineHeight, text, lines);
@@ -126,9 +126,26 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
         int lineTextLength = g.getFontMetrics().stringWidth(lineTextUpToCursor);
         int caretX = START_X + lineTextLength;
         int caretY = (currentLineIndex * lineHeight) + CARET_Y_OFFSET;
-        
+
         g2.setStroke(new BasicStroke(2));
         g2.drawLine(caretX, caretY, caretX, caretY + lineHeight - 2);
+    }
+
+    /**
+     * Update the buffer content and replace the {@link JAreaText} content with the given {@link String}.
+     * @param content The new {@link String} to replace the current {@link JAreaText} and buffer.
+     */
+    public void setTextContent(String content) {
+        gapBuffer.loadText(content);
+        repaint();
+    }
+
+    /**
+     * Returns the full text currently stored in the editor {@link GapBuffer}.
+     * @return The complete text content of the {@link JAreaText} as a {@link String}.
+     */
+    public String getTextContent() {
+        return gapBuffer.getText();
     }
 
     @Override

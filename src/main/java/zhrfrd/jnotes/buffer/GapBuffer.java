@@ -121,7 +121,7 @@ public class GapBuffer {
         // TODO: Maybe remove
 //        if (highlightStart == highlightEnd) {
 //            clearHighlight();
-//        }
+//        }\]
 
         if ((highlightStart == highlightEnd) && (direction == Direction.LEFT || direction == Direction.RIGHT)) {
             clearHighlight();
@@ -142,7 +142,7 @@ public class GapBuffer {
 
     /**
      * Internal method to move the cursor without clearing the selection.
-     * This is used by highlightChar() to move the cursor while maintaining selection state.
+     * This is used by {@link #highlightChar(Direction, boolean)} to move the cursor while maintaining selection state.
      * @param direction The direction to move the cursor: {@code LEFT}, {@code RIGHT}, {@code UP}, {@code DOWN}.
      */
     private void moveCursorAndPreserveHighlight(Direction direction, boolean isModifierDown) {
@@ -375,6 +375,22 @@ public class GapBuffer {
      */
     public String getText(int end) {
         return buildText(0, end, false);
+    }
+
+    /**
+     * Replaces the entire buffer with the given text. A small extra gap is allocated at the start
+     * to allow efficient insertions without immediately resizing the buffer.
+     * @param text The new text to load into the buffer.
+     */
+    public void loadText(String text) {
+        int newSize = text.length() + 32;   // Allocate new buffer slightly bigger (gap size = 32).
+        buffer = new char[newSize];
+        gapStart = 0;
+        gapEnd = newSize - text.length();
+
+        for (int i = 0; i < text.length(); i++) {
+            buffer[gapEnd + i] = text.charAt(i);
+        }
     }
 
     public int getGapStart() {
