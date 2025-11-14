@@ -11,16 +11,19 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class JAreaText extends JPanel implements KeyListener, FocusListener {
+    private static final String TITLE = "JNotes";
     private static final int START_X = 10;
-    /** Vertically offsets the caret slightly so it appears centered with the text. */
+    /** Vertically offsets the caret slightly, so it appears centered with the text. */
     private static final int CARET_Y_OFFSET = 5;
     private static final Color HIGHLIGHT_COLOR = new Color(50, 100, 200);
     private static final Color TEXT_COLOR = Color.WHITE;
     private final CommandManager commandManager;
-    private GapBuffer gapBuffer;
+    private final GapBuffer gapBuffer;
     private boolean caretVisible;
+    JFrame frame;
 
-    public JAreaText() {
+    public JAreaText(JFrame frame) {
+        this.frame = frame;
         gapBuffer = new GapBuffer();
         commandManager = new CommandManager();
         caretVisible = true;
@@ -138,6 +141,10 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
     public void setTextContent(String content) {
         gapBuffer.loadText(content);
         repaint();
+    }
+
+    public void setFrameTitle(String title) {
+        frame.setTitle(TITLE + " | " + title);
     }
 
     /**

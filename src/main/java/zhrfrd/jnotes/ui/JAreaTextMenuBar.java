@@ -7,13 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class JAreaTextMenuBar extends JMenuBar {
-
     private final JAreaText jAreaText;
     private Path currentFile = null;   // Stores last saved/opened file.
 
-    public JAreaTextMenuBar(JAreaText editor) {
-        this.jAreaText = editor;
-
+    public JAreaTextMenuBar(JAreaText jAreaText) {
+        this.jAreaText = jAreaText;
         JMenu fileMenu = new JMenu("File");
 
         // Open File
@@ -52,6 +50,9 @@ public class JAreaTextMenuBar extends JMenuBar {
             try {
                 String content = Files.readString(currentFile);
                 jAreaText.setTextContent(content);
+                int lastIndexSlash = currentFile.toString().lastIndexOf('/');
+                String title = currentFile.toString().substring(lastIndexSlash + 1);
+                jAreaText.setFrameTitle(title);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Failed to open file:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
