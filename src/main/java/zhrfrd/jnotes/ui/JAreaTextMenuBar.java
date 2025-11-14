@@ -50,9 +50,7 @@ public class JAreaTextMenuBar extends JMenuBar {
             try {
                 String content = Files.readString(currentFile);
                 jAreaText.setTextContent(content);
-                int lastIndexSlash = currentFile.toString().lastIndexOf('/');
-                String title = currentFile.toString().substring(lastIndexSlash + 1);
-                jAreaText.setFrameTitle(title);
+                setFrameTitle();
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Failed to open file:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -70,6 +68,7 @@ public class JAreaTextMenuBar extends JMenuBar {
 
             if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
                 currentFile = chooser.getSelectedFile().toPath();
+                setFrameTitle();
             } else {   // User cancelled action.
                 return;
             }
@@ -80,5 +79,11 @@ public class JAreaTextMenuBar extends JMenuBar {
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, "Failed to save file:\n" + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void setFrameTitle() {
+        int lastIndexSlash = currentFile.toString().lastIndexOf('/');
+        String title = currentFile.toString().substring(lastIndexSlash + 1);
+        jAreaText.setFrameTitle(title);
     }
 }
