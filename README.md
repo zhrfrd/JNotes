@@ -17,6 +17,7 @@ interesting key concepts.
 - [x] Highlight text from the cursor to the start or end of a line.
 - [x] Undo and redo actions.
 - [x] Save, Save As and Open file.
+- [x] Show lines number.
 
 ## Approach and design choices
 The first naive approach I've used to handle the logic for sequential characters insertion, deletion, cursor movement
@@ -96,7 +97,8 @@ JNotes/
 │   │   │           │   └── PasteCommand.java
 │   │   │           ├── ui
 │   │   │           │   ├── JAreaText.java
-│   │   │           │   └── JAreaTextMenuBar.java
+│   │   │           │   ├── JAreaTextMenuBar.java
+│   │   │           │   └── JLineNumberPanel.java
 │   │   │           ├── util
 │   │   │           │   └── Direction.java
 │   │   │           └── Main.java
@@ -148,6 +150,7 @@ JNotes/
 - [x] Quick move the cursor at the end of the line.
 - [x] Save file.
 - [x] Open file.
+- [x] Show line number.
 
 ## Improvements
 - [ ] Change the way the gap is moved within then method 'moveCursorAndPreserveHighlight'. At the moment LEFT nad RIGHT call 'setCursorPosition' but UP and DOWN call 'moveGap'.

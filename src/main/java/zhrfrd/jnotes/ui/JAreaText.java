@@ -200,6 +200,9 @@ public class JAreaText extends JPanel implements KeyListener, FocusListener {
             }
         }
 
+        SwingUtilities.getWindowAncestor(this).repaint();
+
+
         repaint();
         e.consume();
     }
