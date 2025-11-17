@@ -8,7 +8,7 @@ import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-        System.setProperty("apple.laf.useScreenMenuBar", "true");   // macOS style menu bar
+//        System.setProperty("apple.laf.useScreenMenuBar", "true");   // macOS style menu bar
 
         JFrame frame = new JFrame("JNotes");
         JAreaText jAreaText = new JAreaText(frame);

@@ -7,6 +7,8 @@ like a text editor. The inspiration for this project came from Austin Z. Henley'
 [Challenging projects every programmer should try](https://austinhenley.com/blog/challengingprojects.html), which highlights various data structures I might use and other
 interesting key concepts.
 
+![Demo](./res/jnotes.gif)
+
 ## Features
 - [x] Enter and edit text.
 - [x] Insert new lines.
@@ -115,52 +117,10 @@ JNotes/
 └── .gitignore
 ```
 
-## TODO
-- [ ] Move cursor with the mouse.
-  - [ ] Reset gap position.
-- [x] Start a new line when pressing Enter.
-- [x] Implement a custom "text area" without relying on `JTextArea` from the Swing library or similar components.
-- [x] Change font from "proportional font" to "monospace font";
-- [x] Implement Undo.
-- [x] Implement Redo.
-- [x] Add support for deleting characters:
-  - [x] Delete characters before the cursor.
-  - [x] Delete characters after the cursor.
-- [x] Add text cursor with its behaviours.
-  - [x] Move cursor left with keystrokes.
-      - [x] Reset gap position.
-  - [x] Move cursor right with keystrokes.
-      - [x] Reset gap position.
-  - [x] Move cursor up following the correct "columns" on the y-axis with keystrokes.
-      - [x] Reset gap position.
-  - [x] Move cursor down following the correct "columns" on the y-axis with keystrokes.
-      - [x] Reset gap position.
-- [x] Highlight text.
-    - [x] Highlight to the left.
-    - [x] Highlight to the right.
-    - [x] Highlight up.
-    - [x] Highlight down.
-    - [x] Show highlight in the text.
-- [x] Copy and paste characters allowing full integration with the system clipboard. (use `Toolkit.getDefaultToolkit().getSystemClipboard()`).
-- [x] Fix Undo when pasting text within inserted chars. (The Undo Stack contains also the MoveCursorCommand).
-- [x] Check repeated work in PasteCommand#execute(). It might need refactoring :<br>
-  ` gapBuffer.setCursorPosition(positionAtInsert);   // Move cursor to the original insertion position.`<br>
-  ` gapBuffer.insert(pastedText);   // Insert text at the stored position.`
-- [x] Quick move the cursor at the beginning of the line.
-- [x] Quick move the cursor at the end of the line.
-- [x] Save file.
-- [x] Open file.
-- [x] Show line number.
-
-## Improvements
-- [ ] Change the way the gap is moved within then method 'moveCursorAndPreserveHighlight'. At the moment LEFT nad RIGHT call 'setCursorPosition' but UP and DOWN call 'moveGap'.
+## Future improvements
+- [ ] Add support for mouse selection, highlight, copy, cut and paste.
 - [ ] Adjust text highlight height.
-- [ ] Improve the loop that iterates through each line in `paintComponent()`. At the moment the loop runs at each timer tick and this increases with the number of new lines.
-    Moreover, it runs each time you type on the editor decreasing obviously it's performance.
-- [ ] There is a glitch happening when maximizing and minimizing the editor.
 - [ ] When deleting text after resizing the buffer, re-shrink the buffer in order to not waste too much memory.
-- [x] Don't show the gap empty spaces in the text.
-    - [x] Fix `getText(int end)`.
 
 ## Notes
 Currently, JNotes does not support supplementary characters.
