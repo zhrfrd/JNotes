@@ -7,8 +7,6 @@ like a text editor. The inspiration for this project came from Austin Z. Henley'
 [Challenging projects every programmer should try](https://austinhenley.com/blog/challengingprojects.html), which highlights various data structures I might use and other
 interesting key concepts.
 
-![Demo](./res/jnotes.gif)
-
 ## Features
 - [x] Enter and edit text.
 - [x] Insert new lines.
@@ -33,6 +31,8 @@ structure which reduces the time complexity of insertion and deletion to O(1). T
 To manage user operations such as character insertion and deletion in a structured manner, I have used
 the [Command design pattern](https://refactoring.guru/design-patterns/command) which enforces the *Single Responsibility Principle*
 and *Open/Closed Principle*.
+
+![Demo](./res/jnotes.gif)
 
 ## Requirements
 
